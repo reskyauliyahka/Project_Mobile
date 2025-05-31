@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginBottom="15dp"
+    app:cardElevation="10dp"
+    android:id="@+id/card_kuis">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_unklik"
+        android:padding="12dp"
+        >
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/rounded_unklik"
+            android:padding="5dp"
+            android:layout_gravity="center"
+            >
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="10dp"
+                >
+                <ImageView
+                    android:id="@+id/img_kuis"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img1"
+                    android:scaleType="centerCrop"
+                    />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center
+"
+            >
+            <TextView
+                android:id="@+id/judul_kuis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Judul Kuis"
+                android:textColor="@color/utama"
+                android:fontFamily="@font/nexaheavy"
+                android:textSize="14sp"
+                />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/kategori_kuis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kategori Kuis"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/tipe_kuis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipe Kuis"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/tingkat_kesulitan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Easy"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_klik"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/utama"
+                android:fontFamily="@font/nexaheavy"
+                />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                />
+            <ImageView
+                android:id="@+id/tambah_favorit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/bookmark_kosong"
+                android:layout_gravity="end"
+                android:tint="@color/black"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

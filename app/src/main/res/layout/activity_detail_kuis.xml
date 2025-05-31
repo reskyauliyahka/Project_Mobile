@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".Activity.DetailKuisActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:id="@+id/btn_kembali"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/arrow"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:tint="@color/text"
+            />
+
+        <TextView
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detail Kuis"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+    
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="10dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/rounded_unklik"
+            android:layout_gravity="center"
+            android:gravity="center"
+            >
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/rounded_unklik"
+                android:padding="5dp"
+                android:layout_gravity="center"
+                >
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="10dp"
+                    >
+                    <ImageView
+                        android:id="@+id/img_kuis"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/img1"
+                        android:scaleType="centerCrop"
+                        />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/judul_kuis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Judul Kuis"
+                android:textColor="@color/utama"
+                android:fontFamily="@font/nexaheavy"
+                android:textSize="14sp"
+                />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/kategori_kuis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kategori Kuis"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/tipe_kuis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipe Kuis"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/tingkat_kesulitan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Easy"
+                android:textSize="12sp"
+                android:background="@drawable/rounded_klik"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/utama"
+                android:fontFamily="@font/nexaheavy"
+                />
+
+            <ImageView
+                android:id="@+id/tambah_favorit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/bookmark_kosong"
+                android:layout_gravity="end"
+                />
+            
+        </LinearLayout>
+        
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="@color/white"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@drawable/rounded_unklik"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jumlah Soal"
+                android:textSize="14sp"
+                android:textColor="@color/text"
+                android:fontFamily="@font/nexaheavy"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/jumlah_soal"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textSize="16sp"
+                android:textColor="@color/text"
+                android:fontFamily="@font/nexaheavy"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="@color/white"
+        >
+
+        <TextView
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Belum Mengerjakan Kuis"
+            android:textSize="14sp"
+            android:background="@drawable/rounded_unklik"
+            android:textColor="@color/text"
+            android:fontFamily="@font/nexaheavy"
+            android:gravity="center"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="20dp"
+        >
+        <Button
+            android:id="@+id/btn_selesai"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_unklik"
+            android:text="Selesai"
+            android:textColor="@color/utama"
+            android:fontFamily="@font/nexaheavy"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+        <Button
+            android:id="@+id/btn_dibuat"
+            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_klik"
+            android:text="Kerjakan Kuis"
+            android:textColor="@color/utama"
+            android:fontFamily="@font/nexaheavy"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            />
+    </LinearLayout>
+
+</LinearLayout>

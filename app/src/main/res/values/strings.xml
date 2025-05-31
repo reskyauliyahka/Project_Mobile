@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Brainify</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="kategori_kuis">
+        <item>Kategori Kuis</item>
+        <item>Matematika</item>
+        <item>Bahasa Indonesia</item>
+        <item>Pemrograman</item>
+        <item>Fisika</item>
+    </string-array>
+
+    <string-array name="tipe_kuis">
+        <item>Tipe Kuis</item>
+        <item>Pilihan Ganda</item>
+        <item>Boolean</item>
+    </string-array>
+
+    <string-array name="tingkat_kesulitan">
+        <item>Tingkat Kesulitan</item>
+        <item>Mudah</item>
+        <item>Sedang</item>
+        <item>Sulit</item>
+    </string-array>
+
+</resources>
