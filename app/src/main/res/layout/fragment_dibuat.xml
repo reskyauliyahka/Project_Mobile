@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.DibuatFragment"
     android:orientation="vertical"
-    android:layout_margin="20dp"
     >
     <LinearLayout
+        android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -16,6 +16,7 @@
         >
 
         <EditText
+            android:id="@+id/cari"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -37,42 +38,92 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
         <Spinner
+            android:id="@+id/kategori_kuis"
             android:background="@drawable/rounded_unklik"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp"
             android:padding="10dp"
+            android:popupBackground="@color/white"
             />
 
         <Spinner
+            android:id="@+id/tipe_kuis"
             android:layout_marginStart="5dp"
             android:background="@drawable/rounded_unklik"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp"
             android:padding="10dp"
+            android:popupBackground="@color/white"
             />
 
         <Spinner
+            android:id="@+id/tingkat_kesulitan"
             android:layout_marginStart="5dp"
             android:background="@drawable/rounded_unklik"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp"
             android:padding="10dp"
+            android:popupBackground="@color/white"
             />
-
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_selesai"
-        android:layout_marginTop="20dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:id="@+id/ic_loading"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/loading"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/gagal_memuat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Gagal memuat kuis"
+            android:textColor="@color/text"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+
+            />
+
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Tidak ada hasil"
+            android:textColor="@color/text"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="20dp"
+            android:id="@+id/recycler_dibuat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            />
+    </LinearLayout>
 </LinearLayout>

@@ -31,6 +31,7 @@
                 >
 
                 <ImageView
+                    android:id="@+id/img"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@drawable/cloud"
@@ -64,18 +65,20 @@
             android:text="Judul Kuis"
             android:textColor="@color/utama"
             android:textSize="14sp"
-            android:padding="10dp"
+            android:paddingVertical="10dp"
             android:fontFamily="@font/nexaheavy"
             />
 
         <EditText
+            android:id="@+id/judul_kuis"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/rounded_unklik"
             android:hint="judul kuis"
             android:padding="10dp"
             android:textColorHint="#89009C9E"
-            android:textSize="14sp"
+            android:textColor="@color/utama"
+            android:textSize="16sp"
             />
 
         <TextView
@@ -84,17 +87,16 @@
             android:text="Kategori Kuis"
             android:textColor="@color/utama"
             android:textSize="14sp"
-            android:padding="10dp"
+            android:paddingVertical="10dp"
             android:fontFamily="@font/nexaheavy"
             />
 
-        <EditText
+        <Spinner
+            android:id="@+id/kategori_kuis"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/rounded_unklik"
-            android:hint="kategori kuis"
-            android:padding="10dp"
-            android:textColorHint="#89009C9E"
+            android:popupBackground="@color/white"
             android:textSize="14sp"
             />
 
@@ -104,15 +106,16 @@
             android:text="Tipe Kuis"
             android:textColor="@color/utama"
             android:textSize="14sp"
-            android:padding="10dp"
+            android:paddingVertical="10dp"
             android:fontFamily="@font/nexaheavy"
             />
 
         <Spinner
+            android:id="@+id/tipe_kuis"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/rounded_unklik"
-            android:padding="10dp"
+            android:popupBackground="@color/white"
             android:textColorHint="#89009C9E"
             />
         <TextView
@@ -121,24 +124,26 @@
             android:text="Tingkat Kesulitan"
             android:textColor="@color/utama"
             android:textSize="14sp"
-            android:padding="10dp"
+            android:paddingVertical="10dp"
             android:fontFamily="@font/nexaheavy"
             />
 
         <Spinner
+            android:id="@+id/tingkat_kesulitan"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/rounded_unklik"
-            android:padding="10dp"
+            android:popupBackground="@color/white"
             android:textColorHint="#89009C9E"
             />
 
         <Button
+            android:id="@+id/selanjutnya"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/rounded_klik"
-            android:text="Simpan"
+            android:text="Selanjutnya"
             android:fontFamily="@font/nexaheavy"
             android:textAllCaps="false"
             android:textColor="@color/utama"

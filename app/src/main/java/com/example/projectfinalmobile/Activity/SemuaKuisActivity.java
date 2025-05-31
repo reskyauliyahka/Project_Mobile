@@ -21,13 +21,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.projectfinalmobile.Adapter.KuisAdapter;
+import com.example.projectfinalmobile.Helper.KuisHelper;
 import com.example.projectfinalmobile.Model.KuisModel;
 import com.example.projectfinalmobile.Networking.ApiService;
 import com.example.projectfinalmobile.Networking.RetrofitClient;
 import com.example.projectfinalmobile.R;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +44,7 @@ public class SemuaKuisActivity extends AppCompatActivity {
     private TextView gagalMemuat, no_data;
     private Spinner spinnerKategori, spinnerTipe, spinnerTingkat;
     private EditText cariEditText;
+    private KuisHelper kuisHelper;
 
     private List<KuisModel> allKuisList = new ArrayList<>();
 
@@ -48,6 +52,8 @@ public class SemuaKuisActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_semua_kuis);
+
+        kuisHelper = new KuisHelper(this);
 
         recyclerKuis = findViewById(R.id.recyclekuis);
         recyclerKuis.setLayoutManager(new LinearLayoutManager(this));
@@ -130,7 +136,28 @@ public class SemuaKuisActivity extends AppCompatActivity {
             public void onResponse(Call<List<KuisModel>> call, Response<List<KuisModel>> response) {
                 icLoading.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null) {
-                    allKuisList = response.body();
+                    List<KuisModel> apiKuisList = response.body();
+                    List<KuisModel> localKuisList = loadLocalKuis();
+
+                    Set<String> existingKeys = new HashSet<>();
+
+                    List<KuisModel> combinedKuisList = new ArrayList<>();
+                    for (KuisModel kuis : apiKuisList) {
+                        String key = generateKey(kuis);
+                        existingKeys.add(key);
+                        combinedKuisList.add(kuis);
+                    }
+
+                    for (KuisModel kuis : localKuisList) {
+                        String key = generateKey(kuis);
+                        if (!existingKeys.contains(key)) {
+                            combinedKuisList.add(kuis);
+                        }
+                    }
+
+                    allKuisList = combinedKuisList;
+
+
                     filterKuis();
                 } else {
                     gagalMemuat.setVisibility(View.VISIBLE);
@@ -198,4 +225,19 @@ public class SemuaKuisActivity extends AppCompatActivity {
         super.onResume();
         loadAllKuisFromAPI();
     }
+
+    private List<KuisModel> loadLocalKuis() {
+        return kuisHelper.getAllKuis2(); // Pastikan kamu punya method ini di KuisHelper
+    }
+
+    private String generateKey(KuisModel kuis) {
+        return kuis.getTitle() + "|" +
+                kuis.getCategory() + "|" +
+                kuis.getType() + "|" +
+                kuis.getDifficulty() + "|" +
+                kuis.getId_Image() + "|"  +
+                kuis.getUserId();
+    }
+
+
 }

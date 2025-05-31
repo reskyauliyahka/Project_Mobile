@@ -18,6 +18,11 @@ public class KuisModel implements Parcelable {
     private String difficulty;
     private List<PertanyaanModel> questions;
 
+    private String userId;
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
+
     public KuisModel() {
         // kosong, supaya bisa buat objek tanpa argumen
     }
