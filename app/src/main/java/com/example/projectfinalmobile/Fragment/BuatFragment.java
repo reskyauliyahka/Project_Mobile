@@ -1,5 +1,6 @@
 package com.example.projectfinalmobile.Fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,9 +13,9 @@ import android.widget.Button;
 
 import com.example.projectfinalmobile.R;
 
-public class BuatFragment extends Fragment {
-    private Button btnDetail, btnDaftar;
+public class BuatFragment extends Fragment implements InputDetailFragment.OnNextClickListener {
 
+    private Button btnDetail, btnDaftar;
 
     public BuatFragment() {
         // Required empty public constructor
@@ -24,27 +25,22 @@ public class BuatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buat, container, false);
+
         btnDetail = view.findViewById(R.id.btn_detail);
         btnDaftar = view.findViewById(R.id.btn_daftar);
 
         replaceFragment(new InputDetailFragment());
 
-        btnDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new InputDetailFragment());
-                btnDetail.setBackgroundResource(R.drawable.rounded_klik);
-                btnDaftar.setBackgroundResource(R.drawable.rounded_unklik);
-            }
+        btnDetail.setOnClickListener(v -> {
+            replaceFragment(new InputDetailFragment());
+            btnDetail.setBackgroundResource(R.drawable.rounded_klik);
+            btnDaftar.setBackgroundResource(R.drawable.rounded_unklik);
         });
 
-        btnDaftar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new InputDaftarFragment());
-                btnDaftar.setBackgroundResource(R.drawable.rounded_klik);
-                btnDetail.setBackgroundResource(R.drawable.rounded_unklik);
-            }
+        btnDaftar.setOnClickListener(v -> {
+            replaceFragment(new InputDaftarFragment());
+            btnDaftar.setBackgroundResource(R.drawable.rounded_klik);
+            btnDetail.setBackgroundResource(R.drawable.rounded_unklik);
         });
 
         return view;
@@ -56,5 +52,26 @@ public class BuatFragment extends Fragment {
                 .replace(R.id.fragment_container3, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
+    }
+
+    // Callback dari InputDetailFragment
+    @Override
+    public void onNextClicked(String judul, String kategori, String tipe, String tingkatKesulitan, Uri imgUri) {
+        // Buat instance InputDaftarFragment dan kirim data via bundle
+        InputDaftarFragment daftarFragment = new InputDaftarFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("judul", judul);
+        bundle.putString("kategori", kategori);
+        bundle.putString("tipe", tipe);
+        bundle.putString("tingkat_kesulitan", tingkatKesulitan);
+        bundle.putString("img_url", imgUri != null ? imgUri.toString() : null);
+        daftarFragment.setArguments(bundle);
+
+        replaceFragment(daftarFragment);
+
+        // Update tombol klik (optional)
+        btnDaftar.setBackgroundResource(R.drawable.rounded_klik);
+        btnDetail.setBackgroundResource(R.drawable.rounded_unklik);
     }
 }

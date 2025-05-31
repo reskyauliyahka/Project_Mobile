@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.example.projectfinalmobile.Database.DatabaseContract;
 import com.example.projectfinalmobile.Database.DatabaseHelper;
@@ -37,6 +38,70 @@ public class KuisHelper {
     public Cursor getAllKuis() {
         return database.query(DatabaseContract.Kuis.TABLE_NAME, null, null, null, null, null, null);
     }
+
+    public boolean isKuisDuplicate(KuisModel kuis, SQLiteDatabase db) {
+        StringBuilder queryBuilder = new StringBuilder();
+        List<String> args = new ArrayList<>();
+
+        queryBuilder.append("SELECT 1 FROM ")
+                .append(DatabaseContract.Kuis.TABLE_NAME)
+                .append(" WHERE ");
+
+        List<String> conditions = new ArrayList<>();
+
+        if (kuis.getTitle() != null) {
+            conditions.add(DatabaseContract.Kuis.JUDUL + " = ?");
+            args.add(kuis.getTitle());
+        } else {
+            conditions.add(DatabaseContract.Kuis.JUDUL + " IS NULL");
+        }
+
+        if (kuis.getCategory() != null) {
+            conditions.add(DatabaseContract.Kuis.KATEGORI + " = ?");
+            args.add(kuis.getCategory());
+        } else {
+            conditions.add(DatabaseContract.Kuis.KATEGORI + " IS NULL");
+        }
+
+        if (kuis.getType() != null) {
+            conditions.add(DatabaseContract.Kuis.TIPE + " = ?");
+            args.add(kuis.getType());
+        } else {
+            conditions.add(DatabaseContract.Kuis.TIPE + " IS NULL");
+        }
+
+        if (kuis.getDifficulty() != null) {
+            conditions.add(DatabaseContract.Kuis.TINGKAT_KESULITAN + " = ?");
+            args.add(kuis.getDifficulty());
+        } else {
+            conditions.add(DatabaseContract.Kuis.TINGKAT_KESULITAN + " IS NULL");
+        }
+
+        if (kuis.getId_Image() != null) {
+            conditions.add(DatabaseContract.Kuis.IMG_URL + " = ?");
+            args.add(kuis.getId_Image());
+        } else {
+            conditions.add(DatabaseContract.Kuis.IMG_URL + " IS NULL");
+        }
+
+        if (kuis.getUserId() != null) {
+            conditions.add(DatabaseContract.Kuis.USER_ID + " = ?");
+            args.add(kuis.getUserId());
+        } else {
+            conditions.add(DatabaseContract.Kuis.USER_ID + " IS NULL");
+        }
+
+        // Gabungkan kondisi ke dalam query
+        queryBuilder.append(TextUtils.join(" AND ", conditions));
+
+        Cursor cursor = db.rawQuery(queryBuilder.toString(), args.toArray(new String[0]));
+
+        boolean exists = cursor != null && cursor.moveToFirst();
+        if (cursor != null) cursor.close();
+        return exists;
+    }
+
+
 
     public int delete(int id) {
         return database.delete(DatabaseContract.Kuis.TABLE_NAME,
@@ -84,6 +149,12 @@ public class KuisHelper {
     }
 
     public long insertKuisLengkap(KuisModel kuis, SQLiteDatabase db) {
+
+        if (isKuisDuplicate(kuis, db)) {
+            // Return -1 untuk menandakan tidak ada penyisipan karena duplikat
+            return -1;
+        }
+
         // 1. Insert Kuis
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.Kuis.JUDUL, kuis.getTitle());
@@ -92,11 +163,13 @@ public class KuisHelper {
         values.put(DatabaseContract.Kuis.TINGKAT_KESULITAN, kuis.getDifficulty());
         values.put(DatabaseContract.Kuis.IMG_URL, kuis.getId_Image());
 
+        values.put(DatabaseContract.Kuis.USER_ID, kuis.getUserId());
+
+
         long kuisId = db.insert(DatabaseContract.Kuis.TABLE_NAME, null, values);
 
         if (kuisId != -1 && kuis.getQuestions() != null) {
             for (PertanyaanModel pertanyaan : kuis.getQuestions()) {
-                // 2. Insert Pertanyaan
                 ContentValues pertanyaanValues = new ContentValues();
                 pertanyaanValues.put(DatabaseContract.Pertanyaan.KUIS_ID, kuisId);
                 pertanyaanValues.put(DatabaseContract.Pertanyaan.PERTANYAAN, pertanyaan.getQuestion());
@@ -104,7 +177,6 @@ public class KuisHelper {
 
                 long pertanyaanId = db.insert(DatabaseContract.Pertanyaan.TABLE_NAME, null, pertanyaanValues);
 
-                // 3. Insert Opsi Jawaban
                 if (pertanyaanId != -1 && pertanyaan.getOptions() != null) {
                     for (String opsi : pertanyaan.getOptions()) {
                         ContentValues opsiValues = new ContentValues();
@@ -117,75 +189,6 @@ public class KuisHelper {
         }
 
         return kuisId;
-    }
-
-    public KuisModel getFullKuisById(int id) {
-        Cursor cursorKuis = database.query(
-                DatabaseContract.Kuis.TABLE_NAME,
-                null,
-                DatabaseContract.Kuis._ID + "=?",
-                new String[]{String.valueOf(id)},
-                null, null, null
-        );
-
-        if (cursorKuis != null && cursorKuis.moveToFirst()) {
-            KuisModel kuis = new KuisModel();
-            kuis.setId(cursorKuis.getInt(cursorKuis.getColumnIndexOrThrow(DatabaseContract.Kuis._ID)));
-            kuis.setTitle(cursorKuis.getString(cursorKuis.getColumnIndexOrThrow(DatabaseContract.Kuis.JUDUL)));
-            kuis.setType(cursorKuis.getString(cursorKuis.getColumnIndexOrThrow(DatabaseContract.Kuis.TIPE)));
-            kuis.setCategory(cursorKuis.getString(cursorKuis.getColumnIndexOrThrow(DatabaseContract.Kuis.KATEGORI)));
-            kuis.setDifficulty(cursorKuis.getString(cursorKuis.getColumnIndexOrThrow(DatabaseContract.Kuis.TINGKAT_KESULITAN)));
-            kuis.setId_image(cursorKuis.getString(cursorKuis.getColumnIndexOrThrow(DatabaseContract.Kuis.IMG_URL)));
-            cursorKuis.close();
-
-            // Ambil pertanyaan dari tabel Pertanyaan
-            List<PertanyaanModel> pertanyaanList = new ArrayList<>();
-
-            Cursor cursorPertanyaan = database.query(
-                    DatabaseContract.Pertanyaan.TABLE_NAME,
-                    null,
-                    DatabaseContract.Pertanyaan.KUIS_ID + "=?",
-                    new String[]{String.valueOf(kuis.getId())},
-                    null, null, null
-            );
-
-            if (cursorPertanyaan != null) {
-                while (cursorPertanyaan.moveToNext()) {
-                    PertanyaanModel pertanyaan = new PertanyaanModel();
-                    int pertanyaanId = cursorPertanyaan.getInt(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan._ID));
-                    pertanyaan.setKuis_id(pertanyaanId);
-                    pertanyaan.setQuestion(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.PERTANYAAN)));
-                    pertanyaan.setAnswer(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.JAWABAN)));
-
-                    // Ambil opsi jawaban dari tabel OpsiJawaban
-                    List<String> opsiList = new ArrayList<>();
-                    Cursor cursorOpsi = database.query(
-                            DatabaseContract.OpsiJawaban.TABLE_NAME,
-                            null,
-                            DatabaseContract.OpsiJawaban.PERTANYAAN_ID + "=?",
-                            new String[]{String.valueOf(pertanyaanId)},
-                            null, null, null
-                    );
-
-                    if (cursorOpsi != null) {
-                        while (cursorOpsi.moveToNext()) {
-                            opsiList.add(cursorOpsi.getString(cursorOpsi.getColumnIndexOrThrow(DatabaseContract.OpsiJawaban.TEKS)));
-                        }
-                        cursorOpsi.close();
-                    }
-
-                    pertanyaan.setOptions(opsiList);
-                    pertanyaanList.add(pertanyaan);
-                }
-                cursorPertanyaan.close();
-            }
-
-            kuis.setQuestions(pertanyaanList);
-            return kuis;
-        }
-
-        if (cursorKuis != null) cursorKuis.close();
-        return null;
     }
 
     public KuisModel getFullKuisByIdWithFilter(int id, String kategori, String tipe, String tingkat, String keyword) {
@@ -283,6 +286,153 @@ public class KuisHelper {
         return null;
     }
 
+    public List<KuisModel> getKuisByUserId(String userId) {
+        List<KuisModel> daftarKuis = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                DatabaseContract.Kuis.TABLE_NAME,
+                null,
+                DatabaseContract.Kuis.USER_ID + " = ?",
+                new String[]{userId},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                KuisModel kuis = new KuisModel();
+                int kuisId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis._ID));
+                kuis.setId(kuisId);
+                kuis.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.JUDUL)));
+                kuis.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.KATEGORI)));
+                kuis.setType(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.TIPE)));
+                kuis.setDifficulty(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.TINGKAT_KESULITAN)));
+                kuis.setId_image(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.IMG_URL)));
+                kuis.setUserId(userId);
+
+                // Ambil pertanyaan untuk kuis ini
+                List<PertanyaanModel> pertanyaanList = new ArrayList<>();
+                Cursor cursorPertanyaan = db.query(
+                        DatabaseContract.Pertanyaan.TABLE_NAME,
+                        null,
+                        DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
+                        new String[]{String.valueOf(kuisId)},
+                        null, null, null
+                );
+
+                if (cursorPertanyaan != null && cursorPertanyaan.moveToFirst()) {
+                    do {
+                        PertanyaanModel pertanyaan = new PertanyaanModel();
+                        int pertanyaanId = cursorPertanyaan.getInt(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan._ID));
+                        pertanyaan.setKuis_id(pertanyaanId);
+                        pertanyaan.setQuestion(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.PERTANYAAN)));
+                        pertanyaan.setAnswer(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.JAWABAN)));
+
+                        // Ambil opsi jawaban untuk pertanyaan ini
+                        List<String> opsiList = new ArrayList<>();
+                        Cursor cursorOpsi = db.query(
+                                DatabaseContract.OpsiJawaban.TABLE_NAME,
+                                null,
+                                DatabaseContract.OpsiJawaban.PERTANYAAN_ID + " = ?",
+                                new String[]{String.valueOf(pertanyaanId)},
+                                null, null, null
+                        );
+
+                        if (cursorOpsi != null && cursorOpsi.moveToFirst()) {
+                            do {
+                                opsiList.add(cursorOpsi.getString(cursorOpsi.getColumnIndexOrThrow(DatabaseContract.OpsiJawaban.TEKS)));
+                            } while (cursorOpsi.moveToNext());
+                            cursorOpsi.close();
+                        }
+
+                        pertanyaan.setOptions(opsiList);
+                        pertanyaanList.add(pertanyaan);
+                    } while (cursorPertanyaan.moveToNext());
+                    cursorPertanyaan.close();
+                }
+
+                kuis.setQuestions(pertanyaanList);
+                daftarKuis.add(kuis);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return daftarKuis;
+    }
+
+    public List<KuisModel> getAllKuis2() {
+        List<KuisModel> daftarKuis = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                DatabaseContract.Kuis.TABLE_NAME,
+                null,
+                null, // tidak ada filter user_id
+                null,
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                KuisModel kuis = new KuisModel();
+                int kuisId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis._ID));
+                kuis.setId(kuisId);
+                kuis.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.JUDUL)));
+                kuis.setCategory(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.KATEGORI)));
+                kuis.setType(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.TIPE)));
+                kuis.setDifficulty(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.TINGKAT_KESULITAN)));
+                kuis.setId_image(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.IMG_URL)));
+                kuis.setUserId(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.USER_ID))); // ambil dari database
+
+                // Ambil pertanyaan untuk kuis ini
+                List<PertanyaanModel> pertanyaanList = new ArrayList<>();
+                Cursor cursorPertanyaan = db.query(
+                        DatabaseContract.Pertanyaan.TABLE_NAME,
+                        null,
+                        DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
+                        new String[]{String.valueOf(kuisId)},
+                        null, null, null
+                );
+
+                if (cursorPertanyaan != null && cursorPertanyaan.moveToFirst()) {
+                    do {
+                        PertanyaanModel pertanyaan = new PertanyaanModel();
+                        int pertanyaanId = cursorPertanyaan.getInt(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan._ID));
+                        pertanyaan.setKuis_id(pertanyaanId);
+                        pertanyaan.setQuestion(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.PERTANYAAN)));
+                        pertanyaan.setAnswer(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.JAWABAN)));
+
+                        // Ambil opsi jawaban untuk pertanyaan ini
+                        List<String> opsiList = new ArrayList<>();
+                        Cursor cursorOpsi = db.query(
+                                DatabaseContract.OpsiJawaban.TABLE_NAME,
+                                null,
+                                DatabaseContract.OpsiJawaban.PERTANYAAN_ID + " = ?",
+                                new String[]{String.valueOf(pertanyaanId)},
+                                null, null, null
+                        );
+
+                        if (cursorOpsi != null && cursorOpsi.moveToFirst()) {
+                            do {
+                                opsiList.add(cursorOpsi.getString(cursorOpsi.getColumnIndexOrThrow(DatabaseContract.OpsiJawaban.TEKS)));
+                            } while (cursorOpsi.moveToNext());
+                            cursorOpsi.close();
+                        }
+
+                        pertanyaan.setOptions(opsiList);
+                        pertanyaanList.add(pertanyaan);
+                    } while (cursorPertanyaan.moveToNext());
+                    cursorPertanyaan.close();
+                }
+
+                kuis.setQuestions(pertanyaanList);
+                daftarKuis.add(kuis);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return daftarKuis;
+    }
 
 
 
@@ -290,8 +440,6 @@ public class KuisHelper {
     public SQLiteDatabase getWritableDatabase() {
         return dbHelper.getWritableDatabase();
     }
-
-
 
 
 }
