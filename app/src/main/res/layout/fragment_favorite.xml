@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".Fragment.FavoriteFragment"
+    >
+    <LinearLayout
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorit"
+            android:textColor="@color/utama2"
+            android:textSize="24sp"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:cardCornerRadius="10dp"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/logoapk"
+                />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_klik"
+        android:padding="13dp"
+        >
+
+        <EditText
+            android:id="@+id/cari"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="Search"
+            android:background="@android:color/transparent"
+            android:textColorHint="@color/utama"
+            android:textSize="14sp"
+            android:textColor="@color/utama"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/search"
+            android:tint="@color/utama"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <Spinner
+            android:id="@+id/kategori_kuis"
+            android:background="@drawable/rounded_unklik"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:popupBackground="@color/white"
+            />
+
+        <Spinner
+            android:id="@+id/tipe_kuis"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/rounded_unklik"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:popupBackground="@color/white"
+            />
+
+        <Spinner
+            android:id="@+id/tingkat_kesulitan"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/rounded_unklik"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:popupBackground="@color/white"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:id="@+id/ic_loading"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/loading"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/gagal_memuat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Gagal memuat kuis"
+            android:textColor="@color/text"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+
+            />
+
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Tidak ada hasil"
+            android:textColor="@color/text"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_favorite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            />
+    </LinearLayout>
+
+</LinearLayout>
