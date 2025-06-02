@@ -174,12 +174,10 @@ public class SemuaKuisActivity extends AppCompatActivity {
     }
 
     private void filterKuis() {
-        // Tampilkan loading.gif
         icLoading.setVisibility(View.VISIBLE);
         recyclerKuis.setVisibility(View.GONE);
         no_data.setVisibility(View.GONE);
 
-        // Delay agar loading.gif terlihat
         new android.os.Handler().postDelayed(() -> {
             String selectedKategori = spinnerKategori.getSelectedItem().toString();
             String selectedTipe = spinnerTipe.getSelectedItem().toString();
@@ -210,7 +208,7 @@ public class SemuaKuisActivity extends AppCompatActivity {
                 recyclerKuis.setAdapter(kuisAdapter);
             }
 
-        }, 1500); // delay 600ms
+        }, 1500);
     }
 
 
@@ -227,7 +225,7 @@ public class SemuaKuisActivity extends AppCompatActivity {
     }
 
     private List<KuisModel> loadLocalKuis() {
-        return kuisHelper.getAllKuis2(); // Pastikan kamu punya method ini di KuisHelper
+        return kuisHelper.getAllKuis2();
     }
 
     private String generateKey(KuisModel kuis) {

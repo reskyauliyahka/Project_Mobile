@@ -70,8 +70,5 @@ public class FavoritHelper {
         return exists;
     }
 
-
-
-
 }
 

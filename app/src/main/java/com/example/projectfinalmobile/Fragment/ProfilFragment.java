@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log; // Tambahkan ini
+import android.util.Log;
+
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,21 +37,26 @@ public class ProfilFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profil, container, false);
         LinearLayout temaLayout = view.findViewById(R.id.thema);
 
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt("user_id", -1);
+
         temaLayout.setOnClickListener(v -> {
-            boolean isDark = ThemeHelper.isDarkMode(requireContext());
-            Log.d(TAG, "Tema saat ini: " + (isDark ? "Dark" : "Light"));
+            if (userId != -1) {
+                String userIdStr = String.valueOf(userId);
+                boolean isDark = ThemeHelper.isDarkMode(requireContext(), userIdStr);
+                Log.d(TAG, "Tema saat ini: " + (isDark ? "Dark" : "Light"));
 
-            ThemeHelper.setDarkMode(requireContext(), !isDark);
+                ThemeHelper.setDarkMode(requireContext(), userIdStr, !isDark);
+                Log.d(TAG, "Mengubah tema menjadi: " + (!isDark ? "Dark" : "Light"));
 
-            Log.d(TAG, "Mengubah tema menjadi: " + (!isDark ? "Dark" : "Light"));
-            requireActivity().recreate();
+                requireActivity().recreate(); // Terapkan perubahan tema
+            } else {
+                Log.e(TAG, "Gagal toggle tema: user_id tidak ditemukan di SharedPreferences");
+            }
         });
 
         username = view.findViewById(R.id.username);
         email = view.findViewById(R.id.email);
-
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        int userId = sharedPreferences.getInt("user_id", -1);
 
         if (userId != -1) {
             UserHelper userHelper = new UserHelper(requireContext());
@@ -74,7 +81,6 @@ public class ProfilFragment extends Fragment {
         }
 
         LinearLayout logout = view.findViewById(R.id.keluar);
-
         logout.setOnClickListener(v -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
@@ -84,9 +90,6 @@ public class ProfilFragment extends Fragment {
             startActivity(intent);
             requireActivity().finish();
         });
-
-
-
 
         return view;
     }

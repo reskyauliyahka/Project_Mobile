@@ -24,10 +24,6 @@ public class AktivitasKuisHelper {
         dbHelper.close();
     }
 
-    public long insert(ContentValues values) {
-        return database.insert(DatabaseContract.AktivitasKuis.TABLE_NAME, null, values);
-    }
-
     public Cursor getAktivitasByUserId(int userId) {
         return database.query(DatabaseContract.AktivitasKuis.TABLE_NAME,
                 null,
@@ -35,5 +31,16 @@ public class AktivitasKuisHelper {
                 new String[]{String.valueOf(userId)},
                 null, null, null);
     }
+
+    public long insertAktivitasKuis(int userId, long kuisId, int skor, String tanggal, SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.AktivitasKuis.USER_ID, userId);
+        values.put(DatabaseContract.AktivitasKuis.KUIS_ID, kuisId);
+        values.put(DatabaseContract.AktivitasKuis.SKOR, skor);
+        values.put(DatabaseContract.AktivitasKuis.TANGGAL, tanggal);
+
+        return db.insert(DatabaseContract.AktivitasKuis.TABLE_NAME, null, values);
+    }
+
 }
 

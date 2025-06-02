@@ -24,7 +24,6 @@ public class KuisModel implements Parcelable {
 
 
     public KuisModel() {
-        // kosong, supaya bisa buat objek tanpa argumen
     }
 
 
@@ -120,9 +119,6 @@ public class KuisModel implements Parcelable {
         this.id = id;
     }
 
-    public String getId_image() {
-        return id_image;
-    }
 
 
     public void setDifficulty(String difficulty) {

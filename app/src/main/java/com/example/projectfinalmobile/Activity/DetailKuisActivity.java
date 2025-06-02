@@ -1,11 +1,13 @@
 package com.example.projectfinalmobile.Activity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.squareup.picasso.Picasso;
 
 public class DetailKuisActivity extends AppCompatActivity {
     ImageView tvImage, btn_kembali, btn_favorit;
+    Button btn_kerjakan;
     TextView tvJudul, tvKategori, tvTingkatKesulitan, tvTipe, tvjumlah_soal;
 
     private FavoritHelper favoritHelper;
@@ -87,7 +90,6 @@ public class DetailKuisActivity extends AppCompatActivity {
             int jumlahSoal = kuis.getQuestions() != null ? kuis.getQuestions().size() : 0;
             tvjumlah_soal.setText(String.valueOf(jumlahSoal));
 
-            // Pastikan data kuis sudah di-insert ke database jika belum ada
             if (!kuisHelper.isKuisExist(kuis.getTitle())) {
                 SQLiteDatabase db = kuisHelper.getWritableDatabase();
                 kuisHelper.insertKuisLengkap(kuis, db);
@@ -127,7 +129,7 @@ public class DetailKuisActivity extends AppCompatActivity {
                     builder.setMessage("Apakah Anda ingin menambahkan ke favorite?");
                     builder.setPositiveButton("Ya", (dialog, which) -> {
                         favoritHelper.insertFavorit(userId, kuisId);
-                        btn_favorit.setImageResource(R.drawable.bookmark); // ikon favorit aktif
+                        btn_favorit.setImageResource(R.drawable.bookmark);
                         Toast.makeText(this, "Berhasil menambahkan ke favorit!", Toast.LENGTH_SHORT).show();
                     });
                 } else {
@@ -147,11 +149,24 @@ public class DetailKuisActivity extends AppCompatActivity {
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
-                // Atur background color dari @color/white setelah dialog ditampilkan
                 dialog.getWindow().setBackgroundDrawable(
                         new ColorDrawable(ContextCompat.getColor(this, R.color.white))
                 );
             });
+
+            btn_kerjakan = findViewById(R.id.btn_kerjakan);
+            btn_kerjakan.setOnClickListener(v -> {
+                if (kuis != null) {
+                    Intent intent = new Intent(this, KerjakanActivity.class);
+                    intent.putExtra("data_kuis", kuis);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Data kuis tidak tersedia", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
         }
     }
 
