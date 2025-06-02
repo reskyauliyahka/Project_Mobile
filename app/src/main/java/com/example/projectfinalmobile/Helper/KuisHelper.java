@@ -31,14 +31,6 @@ public class KuisHelper {
         dbHelper.close();
     }
 
-    public long insert(ContentValues values) {
-        return database.insert(DatabaseContract.Kuis.TABLE_NAME, null, values);
-    }
-
-    public Cursor getAllKuis() {
-        return database.query(DatabaseContract.Kuis.TABLE_NAME, null, null, null, null, null, null);
-    }
-
     public boolean isKuisDuplicate(KuisModel kuis, SQLiteDatabase db) {
         StringBuilder queryBuilder = new StringBuilder();
         List<String> args = new ArrayList<>();
@@ -91,7 +83,6 @@ public class KuisHelper {
             conditions.add(DatabaseContract.Kuis.USER_ID + " IS NULL");
         }
 
-        // Gabungkan kondisi ke dalam query
         queryBuilder.append(TextUtils.join(" AND ", conditions));
 
         Cursor cursor = db.rawQuery(queryBuilder.toString(), args.toArray(new String[0]));
@@ -100,8 +91,6 @@ public class KuisHelper {
         if (cursor != null) cursor.close();
         return exists;
     }
-
-
 
     public int delete(int id) {
         return database.delete(DatabaseContract.Kuis.TABLE_NAME,
@@ -150,12 +139,11 @@ public class KuisHelper {
 
     public long insertKuisLengkap(KuisModel kuis, SQLiteDatabase db) {
 
-        if (isKuisDuplicate(kuis, db)) {
-            // Return -1 untuk menandakan tidak ada penyisipan karena duplikat
-            return -1;
-        }
+//        if (isKuisDuplicate(kuis, db)) {
+//            // Return -1 untuk menandakan tidak ada penyisipan karena duplikat
+//            return -1;
+//        }
 
-        // 1. Insert Kuis
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.Kuis.JUDUL, kuis.getTitle());
         values.put(DatabaseContract.Kuis.TIPE, kuis.getType());
@@ -235,7 +223,6 @@ public class KuisHelper {
             kuis.setDifficulty(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.TINGKAT_KESULITAN)));
             kuis.setId_image(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.IMG_URL)));
 
-            // Ambil pertanyaan
             List<PertanyaanModel> pertanyaanList = new ArrayList<>();
             Cursor cursorPertanyaan = db.query(
                     DatabaseContract.Pertanyaan.TABLE_NAME,
@@ -253,7 +240,6 @@ public class KuisHelper {
                     pertanyaan.setQuestion(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.PERTANYAAN)));
                     pertanyaan.setAnswer(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.JAWABAN)));
 
-                    // Ambil opsi jawaban
                     List<String> opsiList = new ArrayList<>();
                     Cursor cursorOpsi = db.query(
                             DatabaseContract.OpsiJawaban.TABLE_NAME,
@@ -310,7 +296,6 @@ public class KuisHelper {
                 kuis.setId_image(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.IMG_URL)));
                 kuis.setUserId(userId);
 
-                // Ambil pertanyaan untuk kuis ini
                 List<PertanyaanModel> pertanyaanList = new ArrayList<>();
                 Cursor cursorPertanyaan = db.query(
                         DatabaseContract.Pertanyaan.TABLE_NAME,
@@ -328,7 +313,6 @@ public class KuisHelper {
                         pertanyaan.setQuestion(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.PERTANYAAN)));
                         pertanyaan.setAnswer(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.JAWABAN)));
 
-                        // Ambil opsi jawaban untuk pertanyaan ini
                         List<String> opsiList = new ArrayList<>();
                         Cursor cursorOpsi = db.query(
                                 DatabaseContract.OpsiJawaban.TABLE_NAME,
@@ -367,7 +351,7 @@ public class KuisHelper {
         Cursor cursor = db.query(
                 DatabaseContract.Kuis.TABLE_NAME,
                 null,
-                null, // tidak ada filter user_id
+                null,
                 null,
                 null, null, null
         );

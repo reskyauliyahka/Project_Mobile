@@ -28,12 +28,5 @@ public class PertanyaanHelper {
         return database.insert(DatabaseContract.Pertanyaan.TABLE_NAME, null, values);
     }
 
-    public Cursor getAllPertanyaanByKuisId(int kuisId) {
-        return database.query(DatabaseContract.Pertanyaan.TABLE_NAME,
-                null,
-                DatabaseContract.Pertanyaan.KUIS_ID + "=?",
-                new String[]{String.valueOf(kuisId)},
-                null, null, null);
-    }
 }
 

@@ -14,11 +14,5 @@ public interface ApiService {
 
     @GET("quizzes")
     Call<List<KuisModel>> getAllKuis();
-
-    @POST("kuis")
-    Call<KuisModel> insertKuis(@Body KuisModel kuis);
-
-    @POST("favorite")
-    Call<KuisModel> insertFavorite(@Body KuisModel favorite);
 }
 

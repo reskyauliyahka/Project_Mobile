@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,13 +69,11 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
     public void onBindViewHolder(@NonNull KuisViewHolder holder, int position) {
         KuisModel kuis = kuisList.get(position);
 
-        // Set data ke UI
         holder.tvTitle.setText(kuis.getTitle());
         holder.tvCategory.setText(kuis.getCategory());
         holder.tvDifficulty.setText(kuis.getDifficulty());
         holder.type.setText(kuis.getType());
 
-        // Atur warna dan background difficulty
         switch (kuis.getDifficulty()) {
             case "Mudah":
                 holder.tvDifficulty.setTextColor(ContextCompat.getColor(context, R.color.utama));
@@ -90,7 +89,6 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
                 break;
         }
 
-        // Load image pakai Picasso
         Picasso.get()
                 .load(kuis.getId_Image())
                 .placeholder(R.drawable.logout)
@@ -99,21 +97,20 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
                 .centerCrop()
                 .into(holder.ivImage);
 
-        // Intent ke detail activity
         holder.card_kuis.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailKuisActivity.class);
             intent.putExtra("data_kuis", kuis);
             context.startActivity(intent);
         });
 
-        // Ambil userId dari SharedPreferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         int userId = sharedPreferences.getInt("user_id", -1);
 
-        // Masukkan kuis ke DB jika belum ada
         if (!kuisHelper.isKuisExist(kuis.getTitle())) {
             SQLiteDatabase db = kuisHelper.getWritableDatabase();
             kuisHelper.insertKuisLengkap(kuis, db);
+            Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke favorit dengan kuis_id: " + kuis.getId() + " oleh user_id: " + userId);
+
         }
 
 
@@ -136,7 +133,8 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
                 builder.setMessage("Apakah Anda ingin menambahkan ke favorite?");
                 builder.setPositiveButton("Ya", (dialog, which) -> {
                     favoritHelper.insertFavorit(userId, kuisId);
-                    holder.btn_favorit.setImageResource(R.drawable.bookmark); // ikon favorit aktif
+                    Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke favorit dengan kuis_id: " + kuisId + " oleh user_id: " + userId);
+                    holder.btn_favorit.setImageResource(R.drawable.bookmark);
                     Toast.makeText(context, "Berhasil menambahkan ke favorit!", Toast.LENGTH_SHORT).show();
                 });
             } else {
@@ -147,7 +145,6 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
                     holder.btn_favorit.setImageResource(R.drawable.bookmark_kosong);
                     Toast.makeText(context, "Berhasil menghapus dari favorit", Toast.LENGTH_SHORT).show();
 
-                    // Beritahu listener (fragment) agar reload data
                     if (favoritChangedListener != null) {
                         favoritChangedListener.onFavoritChanged();
                     }
@@ -160,7 +157,6 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
             AlertDialog dialog = builder.create();
             dialog.show();
 
-            // Atur background color dari @color/white setelah dialog ditampilkan
             dialog.getWindow().setBackgroundDrawable(
                     new ColorDrawable(ContextCompat.getColor(context, R.color.white))
             );

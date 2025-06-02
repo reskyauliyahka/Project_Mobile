@@ -13,9 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.projectfinalmobile.Helper.UserHelper;
 import com.example.projectfinalmobile.R;
+import com.example.projectfinalmobile.ThemeHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -31,12 +33,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Cek apakah user sudah login
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false);
         if (isLoggedIn) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish(); // Tutup LoginActivity
+            finish();
             return;
         }
 
@@ -46,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
         daftar = findViewById(R.id.daftar);
         togglePassword = findViewById(R.id.hide);
 
-        // Default password hidden
         etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         usersHelper = new UserHelper(this);
@@ -88,12 +88,18 @@ public class LoginActivity extends AppCompatActivity {
             if (cursor.moveToFirst()) {
                 int userId = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
 
-                // Simpan status login ke SharedPreferences
                 SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("user_id", userId);
-                editor.putBoolean("is_logged_in", true); // <- Ini penting
+                editor.putBoolean("is_logged_in", true);
                 editor.apply();
+
+                boolean isDark = ThemeHelper.isDarkMode(this, String.valueOf(userId));
+                if (isDark) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
 
                 Toast.makeText(this, "Login berhasil!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -114,5 +120,4 @@ public class LoginActivity extends AppCompatActivity {
             usersHelper.close();
         }
     }
-
 }

@@ -41,10 +41,6 @@ public class UserHelper {
                 DatabaseContract.Users._ID + "=?", new String[]{String.valueOf(id)});
     }
 
-    public Cursor getAllUsers() {
-        return database.query(DatabaseContract.Users.TABLE_NAME,
-                null, null, null, null, null, null);
-    }
 
 
     public Cursor checkUserLogin(String usernameOrEmail, String password) {

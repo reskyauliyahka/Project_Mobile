@@ -70,7 +70,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop if exists
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Users.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Kuis.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.Pertanyaan.TABLE_NAME);

@@ -67,7 +67,6 @@ public class InputDetailFragment extends Fragment {
         tingkat_kesulitan = view.findViewById(R.id.tingkat_kesulitan);
         selanjutnya = view.findViewById(R.id.selanjutnya);
 
-        // Setup Spinner dengan adapter dari string-array
         ArrayAdapter<CharSequence> adapterKategori = ArrayAdapter.createFromResource(
                 requireContext(), R.array.kategori_kuis, android.R.layout.simple_spinner_item);
         adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -83,7 +82,6 @@ public class InputDetailFragment extends Fragment {
         adapterTingkat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         tingkat_kesulitan.setAdapter(adapterTingkat);
 
-        // Pilih gambar dari galeri
         img.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
@@ -95,7 +93,6 @@ public class InputDetailFragment extends Fragment {
             String tipeText = tipe.getSelectedItem().toString();
             String tingkatText = tingkat_kesulitan.getSelectedItem().toString();
 
-            // Validasi input sederhana
             if (judulText.isEmpty() ||
                     kategoriText.equals("Kategori Kuis") ||
                     tipeText.equals("Tipe Kuis") ||
@@ -104,7 +101,6 @@ public class InputDetailFragment extends Fragment {
                 return;
             }
 
-            // Kirim data ke parent fragment via callback
             listener.onNextClicked(judulText, kategoriText, tipeText, tingkatText, imageUri);
         });
 

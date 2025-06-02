@@ -54,10 +54,8 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
                 .commit();
     }
 
-    // Callback dari InputDetailFragment
     @Override
     public void onNextClicked(String judul, String kategori, String tipe, String tingkatKesulitan, Uri imgUri) {
-        // Buat instance InputDaftarFragment dan kirim data via bundle
         InputDaftarFragment daftarFragment = new InputDaftarFragment();
 
         Bundle bundle = new Bundle();
@@ -70,7 +68,6 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
 
         replaceFragment(daftarFragment);
 
-        // Update tombol klik (optional)
         btnDaftar.setBackgroundResource(R.drawable.rounded_klik);
         btnDetail.setBackgroundResource(R.drawable.rounded_unklik);
     }

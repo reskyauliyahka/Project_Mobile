@@ -30,9 +30,8 @@ public class RegistrasiActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrasi); // ganti sesuai nama file XML-mu
+        setContentView(R.layout.activity_registrasi);
 
-        // Inisialisasi view
         etUsername = findViewById(R.id.username);
         etEmail = findViewById(R.id.email);
         etPassword = findViewById(R.id.password);

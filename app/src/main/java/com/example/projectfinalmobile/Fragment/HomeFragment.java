@@ -79,10 +79,8 @@ public class HomeFragment extends Fragment {
         gagalMemuat = view.findViewById(R.id.gagal_memuat);
         icLoading = view.findViewById(R.id.ic_loading);
 
-        // Tampilkan animasi gif
         Glide.with(this).asGif().load(R.drawable.loading).into(icLoading);
 
-        // Klik ulang pada gif
         icLoading.setOnClickListener(v -> {
             loadKuisFromAPI();
         });
@@ -99,13 +97,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadKuisFromAPI() {
-        // Tampilkan loading
         icLoading.setVisibility(View.VISIBLE);
         gagalMemuat.setVisibility(View.GONE);
         recyclerKuis.setVisibility(View.GONE);
 
         if (!isNetworkAvailable()) {
-            icLoading.setVisibility(View.VISIBLE); // Bisa diklik ulang
+            icLoading.setVisibility(View.VISIBLE);
             gagalMemuat.setVisibility(View.VISIBLE);
             return;
         }
@@ -128,8 +125,8 @@ public class HomeFragment extends Fragment {
                     recyclerKuis.setAdapter(kuisAdapter);
 
                     recyclerKuis.setVisibility(View.VISIBLE);
-//                    icLoading.setVisibility(View.GONE);
-//                    gagalMemuat.setVisibility(View.GONE);
+                    icLoading.setVisibility(View.GONE);
+                    gagalMemuat.setVisibility(View.GONE);
                 } else {
                     gagalMemuat.setVisibility(View.VISIBLE);
                 }
@@ -137,7 +134,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<KuisModel>> call, Throwable t) {
-                icLoading.setVisibility(View.VISIBLE); // tetap ditampilkan untuk retry
+                icLoading.setVisibility(View.VISIBLE);
                 gagalMemuat.setVisibility(View.VISIBLE);
                 recyclerKuis.setVisibility(View.GONE);
             }

@@ -55,12 +55,6 @@ public class InputDaftarFragment extends Fragment {
     private void tambahPertanyaan() {
         View card = inflater.inflate(R.layout.card_pertanyaan, containerPertanyaan, false);
 
-        EditText[] opsi = {
-                card.findViewById(R.id.opsi1),
-                card.findViewById(R.id.opsi2),
-                card.findViewById(R.id.opsi3),
-                card.findViewById(R.id.opsi4)
-        };
 
         ImageView[] acceptIcons = {
                 card.findViewById(R.id.accept_opsi1),
@@ -99,7 +93,6 @@ public class InputDaftarFragment extends Fragment {
         String tingkatKesulitan = args.getString("tingkat_kesulitan");
         String imgUrl = args.getString("img_url");
 
-        // Ambil user ID dari SharedPreferences
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         int userId = sharedPreferences.getInt("user_id", -1);
 
@@ -110,13 +103,11 @@ public class InputDaftarFragment extends Fragment {
 
         List<PertanyaanModel> pertanyaanList = getDaftarPertanyaanLengkap();
 
-        // VALIDASI: Pastikan ada pertanyaan
         if (pertanyaanList.isEmpty()) {
             Toast.makeText(getContext(), "Minimal ada satu pertanyaan", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // VALIDASI: Periksa tiap pertanyaan (soal, opsi, jawaban benar)
         for (int i = 0; i < pertanyaanList.size(); i++) {
             PertanyaanModel p = pertanyaanList.get(i);
 
@@ -125,7 +116,6 @@ public class InputDaftarFragment extends Fragment {
                 return;
             }
 
-            // Hitung jumlah opsi yang valid
             List<String> opsi = p.getOptions();
             int jumlahOpsiValid = 0;
             for (String opsiText : opsi) {
@@ -134,7 +124,6 @@ public class InputDaftarFragment extends Fragment {
                 }
             }
 
-// Validasi berdasarkan tipe kuis
             if (tipe.equalsIgnoreCase("pilihan ganda")) {
                 if (jumlahOpsiValid != 4) {
                     Toast.makeText(getContext(), "Pertanyaan ke-" + (i + 1) + " harus memiliki 4 opsi jawaban untuk tipe 'pilihan ganda'", Toast.LENGTH_SHORT).show();
@@ -213,27 +202,4 @@ public class InputDaftarFragment extends Fragment {
         return daftar;
     }
 
-    public List<String> getSemuaJawabanBenar() {
-        List<String> hasil = new ArrayList<>();
-
-        for (int i = 0; i < containerPertanyaan.getChildCount(); i++) {
-            View card = containerPertanyaan.getChildAt(i);
-
-            EditText[] opsi = {
-                    card.findViewById(R.id.opsi1),
-                    card.findViewById(R.id.opsi2),
-                    card.findViewById(R.id.opsi3),
-                    card.findViewById(R.id.opsi4)
-            };
-
-            int jawabanIndex = listJawabanBenar.get(i);
-            if (jawabanIndex >= 0 && jawabanIndex < 4) {
-                hasil.add(opsi[jawabanIndex].getText().toString().trim());
-            } else {
-                hasil.add("");
-            }
-        }
-
-        return hasil;
-    }
 }
