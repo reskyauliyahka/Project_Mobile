@@ -184,18 +184,49 @@
         app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@color/white"
         >
-
-        <TextView
-            android:padding="20dp"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Belum Mengerjakan Kuis"
-            android:textSize="14sp"
+            android:orientation="vertical"
+            android:padding="20dp"
             android:background="@drawable/rounded_unklik"
-            android:textColor="@color/text"
-            android:fontFamily="@font/nexaheavy"
-            android:gravity="center"
-            />
+            >
+            <TextView
+                android:id="@+id/belum_mengerjakan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Belum Mengerjakan Kuis"
+                android:textSize="14sp"
+                android:textColor="@color/text"
+                android:fontFamily="@font/nexaheavy"
+                android:gravity="center"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/text_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Score"
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:textColor="@color/text"
+                android:fontFamily="@font/nexaheavy"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/score"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Score"
+                android:visibility="gone"
+                android:textSize="18sp"
+                android:textColor="@color/utama"
+                android:fontFamily="@font/nexaheavy"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <View
@@ -210,18 +241,6 @@
         android:orientation="horizontal"
         android:layout_margin="20dp"
         >
-        <Button
-            android:id="@+id/btn_selesai"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_unklik"
-            android:text="Selesai"
-            android:textColor="@color/utama"
-            android:fontFamily="@font/nexaheavy"
-            android:textSize="14sp"
-            android:textAllCaps="false"
-            />
         <Button
             android:id="@+id/btn_kerjakan"
             android:layout_marginStart="10dp"

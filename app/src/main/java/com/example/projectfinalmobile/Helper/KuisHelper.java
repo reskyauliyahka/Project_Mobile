@@ -143,8 +143,10 @@ public class KuisHelper {
 //            // Return -1 untuk menandakan tidak ada penyisipan karena duplikat
 //            return -1;
 //        }
-
         ContentValues values = new ContentValues();
+        if (kuis.getId() != 0) {
+            values.put(DatabaseContract.Kuis._ID, kuis.getId());
+        }
         values.put(DatabaseContract.Kuis.JUDUL, kuis.getTitle());
         values.put(DatabaseContract.Kuis.TIPE, kuis.getType());
         values.put(DatabaseContract.Kuis.KATEGORI, kuis.getCategory());

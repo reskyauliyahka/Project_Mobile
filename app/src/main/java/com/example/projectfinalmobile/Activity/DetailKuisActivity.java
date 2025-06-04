@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.projectfinalmobile.Helper.AktivitasKuisHelper;
 import com.example.projectfinalmobile.Helper.FavoritHelper;
 import com.example.projectfinalmobile.Helper.KuisHelper;
 import com.example.projectfinalmobile.Model.KuisModel;
@@ -24,9 +26,10 @@ import com.squareup.picasso.Picasso;
 public class DetailKuisActivity extends AppCompatActivity {
     ImageView tvImage, btn_kembali, btn_favorit;
     Button btn_kerjakan;
-    TextView tvJudul, tvKategori, tvTingkatKesulitan, tvTipe, tvjumlah_soal;
+    TextView tvJudul, tvKategori, tvTingkatKesulitan, tvTipe, tvjumlah_soal, belum_mengerjakan, score, text_score;
 
     private FavoritHelper favoritHelper;
+    private AktivitasKuisHelper aktivitasKuisHelper;
     private KuisHelper kuisHelper;
     private int userId;
     private int kuisId;
@@ -155,15 +158,50 @@ public class DetailKuisActivity extends AppCompatActivity {
             });
 
             btn_kerjakan = findViewById(R.id.btn_kerjakan);
-            btn_kerjakan.setOnClickListener(v -> {
-                if (kuis != null) {
-                    Intent intent = new Intent(this, KerjakanActivity.class);
-                    intent.putExtra("data_kuis", kuis);
+
+            aktivitasKuisHelper = new AktivitasKuisHelper(this);
+            aktivitasKuisHelper.open();
+
+            boolean sudahDikerjakan = aktivitasKuisHelper.isKuisSudahDikerjakan(userId, kuisId);
+
+            text_score = findViewById(R.id.text_score);
+            score = findViewById(R.id.score);
+            belum_mengerjakan = findViewById(R.id.belum_mengerjakan);
+
+            if (sudahDikerjakan) {
+                btn_kerjakan.setText("Lihat Pembahasan");
+                btn_kerjakan.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, PembahasanActivity.class);
+                    intent.putExtra("kuis_id", kuisId);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(this, "Data kuis tidak tersedia", Toast.LENGTH_SHORT).show();
-                }
-            });
+                });
+
+                int score2 = aktivitasKuisHelper.getSkorByUserIdAndKuisId(userId, kuisId);
+                score.setText(String.valueOf(score2));
+                text_score.setVisibility(View.VISIBLE);
+                score.setVisibility(View.VISIBLE); // pastikan terlihat
+
+                belum_mengerjakan.setVisibility(View.GONE); // sembunyikan pesan
+            } else {
+                btn_kerjakan.setText("Kerjakan Kuis");
+                btn_kerjakan.setOnClickListener(v -> {
+                    if (kuis != null) {
+                        Intent intent = new Intent(this, KerjakanActivity.class);
+                        intent.putExtra("data_kuis", kuis);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "Data kuis tidak tersedia", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                score.setVisibility(View.GONE);
+                text_score.setVisibility(View.GONE);
+
+                belum_mengerjakan.setVisibility(View.VISIBLE); // tampilkan pesan
+            }
+
+
+
 
 
 

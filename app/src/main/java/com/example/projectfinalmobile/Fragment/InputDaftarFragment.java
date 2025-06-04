@@ -160,7 +160,8 @@ public class InputDaftarFragment extends Fragment {
         long result = dbHelper.insertKuisLengkap(kuis, db);
 
         if (result != -1) {
-            Toast.makeText(getContext(), "Kuis berhasil disimpan", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Kuis berhasil disimpan. ID = " + result, Toast.LENGTH_SHORT).show();
+            clearInput();
         } else {
             Toast.makeText(getContext(), "Gagal menyimpan kuis", Toast.LENGTH_SHORT).show();
         }
@@ -201,5 +202,12 @@ public class InputDaftarFragment extends Fragment {
 
         return daftar;
     }
+
+    private void clearInput() {
+        containerPertanyaan.removeAllViews();
+        listJawabanBenar.clear();
+        tambahPertanyaan(); // Tambahkan satu pertanyaan awal kembali
+    }
+
 
 }
