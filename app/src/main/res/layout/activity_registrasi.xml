@@ -1,93 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Activity.RegistrasiActivity"
-    android:orientation="vertical"
-    android:background="@color/utama"
-    android:gravity="center"
-    android:layout_gravity="center"
-    android:padding="40dp"
-    >
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/logoapk"
-        android:scaleType="centerCrop"
-        />
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="40dp"
+        android:background="@color/utama22"
+        >
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/logoapk"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/utama22"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_login"
-
+            android:background="@drawable/rounded_setengah"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:gravity="center"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Daftar"
-                android:textSize="36sp"
-                android:layout_margin="20dp"
+                android:textColor="@color/utama"
                 android:fontFamily="@font/nexaheavy"
-                android:textColor="@color/utama2"
-                android:layout_gravity="center"
+                android:textSize="36sp"
                 />
 
-            <LinearLayout
-                android:layout_marginHorizontal="20dp"
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            >
+            <EditText
+                android:id="@+id/username"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/input_login"
+                android:layout_height="51dp"
+                android:background="@drawable/rounded_unklik"
                 android:padding="10dp"
-                >
-                <EditText
-                    android:id="@+id/username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:hint="Username"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/nexaheavy"
-                    android:textColorHint="#7F084747"
-                    android:textColor="#7F084747"
+                android:hint="username"
+                android:fontFamily="@font/nexaheavy"
+                android:textSize="16sp"
+                android:textColorHint="@color/hide"
+                android:textColor="@color/hide"
+                />
 
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="20dp"
+            <EditText
+                android:id="@+id/email"
+                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/input_login"
+                android:layout_height="51dp"
+                android:background="@drawable/rounded_unklik"
                 android:padding="10dp"
-                >
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:hint="Email"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/nexaheavy"
-                    android:textColorHint="#7F084747"
-                    android:textColor="#7F084747"
-
-                    />
-
-            </LinearLayout>
-
+                android:hint="email"
+                android:fontFamily="@font/nexaheavy"
+                android:textSize="16sp"
+                android:textColorHint="@color/hide"
+                android:textColor="@color/hide"
+                />
             <LinearLayout
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/input_login"
+                android:layout_height="51dp"
+                android:background="@drawable/rounded_unklik"
                 android:padding="10dp"
                 >
                 <EditText
@@ -96,10 +101,11 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:hint="Password"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:fontFamily="@font/nexaheavy"
-                    android:textColorHint="#7F084747"
                     android:textColor="#7F084747"
+                    android:textColorHint="#7F084747"
+                    android:layout_gravity="center"
                     />
 
                 <View
@@ -115,21 +121,22 @@
                     android:src="@drawable/hide"
                     android:layout_gravity="center"
                     android:tint="@color/text"
+                    android:contentDescription="Toggle Password Visibility"
                     />
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/btn_daftar"
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_login"
+                android:layout_height="51dp"
                 android:text="Daftar"
+                android:textColor="@color/utama"
                 android:fontFamily="@font/nexaheavy"
-                android:textColor="#084747"
                 android:textAllCaps="false"
+                android:textSize="16sp"
+                android:background="@drawable/rounded_klik"
                 />
 
             <LinearLayout
@@ -158,5 +165,9 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
+
+    </LinearLayout>
 
 </LinearLayout>

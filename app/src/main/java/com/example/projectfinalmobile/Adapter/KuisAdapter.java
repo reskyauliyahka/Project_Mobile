@@ -109,7 +109,7 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
         if (!kuisHelper.isKuisExist(kuis.getTitle())) {
             SQLiteDatabase db = kuisHelper.getWritableDatabase();
             kuisHelper.insertKuisLengkap(kuis, db);
-            Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke favorit dengan kuis_id: " + kuis.getId() + " oleh user_id: " + userId);
+            Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke tabel kuis dengan kuis_id: " + kuis.getId() + " oleh user_id: " + userId);
 
         }
 

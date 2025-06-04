@@ -91,17 +91,28 @@ public class KerjakanActivity extends AppCompatActivity {
                 int userId = sharedPreferences.getInt("user_id", -1);
 
                 KuisHelper kuisHelper = new KuisHelper(this);
-                long kuisId = kuisHelper.insertKuisLengkap(kuis, db);
+                int kuisId = kuisHelper.getIdByTitle(kuis.getTitle());
 
+                AktivitasKuisHelper aktivitasHelper = new AktivitasKuisHelper(this);
+                String tanggalSekarang = getTanggalHariIni();
 
-                if (kuisId != -1) {
-                    AktivitasKuisHelper aktivitasHelper = new AktivitasKuisHelper(this);
-                    String tanggalSekarang = getTanggalHariIni();
-
-                    aktivitasHelper.insertAktivitasKuis(userId, kuisId, skor, tanggalSekarang, db);
+                long result = aktivitasHelper.insertAktivitasKuis(userId, kuisId, skor, tanggalSekarang, db);
+                if (result > 0) {
+                    Toast.makeText(this, "Berhasil menyimpan aktivitas kuis id" + kuisId, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Kuis sudah pernah dikerjakan sebelumnya", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Gagal menyimpan aktivitas", Toast.LENGTH_SHORT).show();
                 }
+
+
+
+////                if (kuisId != -1) {
+//                    AktivitasKuisHelper aktivitasHelper = new AktivitasKuisHelper(this);
+//                    String tanggalSekarang = getTanggalHariIni();
+//
+//                    aktivitasHelper.insertAktivitasKuis(userId, kuisId, skor, tanggalSekarang, db);
+////                } else {
+////                    Toast.makeText(this, "Kuis sudah pernah dikerjakan sebelumnya", Toast.LENGTH_SHORT).show();
+////                }
 
                 Intent intent = new Intent(KerjakanActivity.this, ScoreActivity.class);
                 intent.putExtra("score", skor);
@@ -124,10 +135,15 @@ public class KerjakanActivity extends AppCompatActivity {
         PertanyaanModel soal = pertanyaanList.get(index);
 
         EditText edtPertanyaan = cardView.findViewById(R.id.pertanyaan);
+        edtPertanyaan.setEnabled(false);
         EditText opsi1 = cardView.findViewById(R.id.opsi1);
+        opsi1.setEnabled(false);
         EditText opsi2 = cardView.findViewById(R.id.opsi2);
+        opsi2.setEnabled(false);
         EditText opsi3 = cardView.findViewById(R.id.opsi3);
+        opsi3.setEnabled(false);
         EditText opsi4 = cardView.findViewById(R.id.opsi4);
+        opsi4.setEnabled(false);
 
         ImageView check1 = cardView.findViewById(R.id.accept_opsi1);
         ImageView check2 = cardView.findViewById(R.id.accept_opsi2);
