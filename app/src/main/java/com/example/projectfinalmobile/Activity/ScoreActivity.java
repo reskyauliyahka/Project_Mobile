@@ -11,6 +11,8 @@ import com.example.projectfinalmobile.R;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ScoreActivity extends AppCompatActivity {
     private TextView txtScore;
     private Button btn_pembahasan;
@@ -22,6 +24,7 @@ public class ScoreActivity extends AppCompatActivity {
 
         txtScore = findViewById(R.id.score);
 
+//        ArrayList<String> jawabanUser = getIntent().getStringArrayListExtra("jawaban_user");
         KuisModel kuis = getIntent().getParcelableExtra("data_kuis");
 
 
@@ -32,6 +35,8 @@ public class ScoreActivity extends AppCompatActivity {
         btn_pembahasan.setOnClickListener(v -> {
             Intent intent = new Intent(this, PembahasanActivity.class);
             intent.putExtra("data_kuis", kuis);
+            intent.putExtra("score", score);
+//            intent.putStringArrayListExtra("jawaban_user", new ArrayList<>(jawabanUser));
             startActivity(intent);
         });
     }

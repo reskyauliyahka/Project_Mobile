@@ -51,6 +51,7 @@ public class DatabaseContract {
         public static final String KUIS_ID = "kuis_id";
         public static final String SKOR = "skor";
         public static final String TANGGAL = "tanggal_pengerjaan";
+        public static final String LIST_JAWABAN_USER = "list_jawaban_user";
     }
 
 }

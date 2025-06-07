@@ -18,6 +18,17 @@ public class KuisModel implements Parcelable {
     private String difficulty;
     private List<PertanyaanModel> questions;
 
+    private List<String> jawabanUser;
+
+    public List<String> getJawabanUser() {
+        return jawabanUser;
+    }
+
+    public void setJawabanUser(List<String> jawabanUser) {
+        this.jawabanUser = jawabanUser;
+    }
+
+
     private String userId;
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
@@ -43,6 +54,7 @@ public class KuisModel implements Parcelable {
         type = in.readString();
         difficulty = in.readString();
         questions = in.createTypedArrayList(PertanyaanModel.CREATOR);
+        jawabanUser = in.createStringArrayList();
     }
 
     public static final Creator<KuisModel> CREATOR = new Creator<KuisModel>() {
@@ -94,6 +106,7 @@ public class KuisModel implements Parcelable {
         dest.writeString(type);
         dest.writeString(difficulty);
         dest.writeTypedList(questions);
+        dest.writeStringList(jawabanUser);
     }
 
     public void setId_image(String id_image) {

@@ -1,5 +1,8 @@
 package com.example.projectfinalmobile.Activity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,13 +15,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.projectfinalmobile.Model.KuisModel;
 import com.example.projectfinalmobile.Model.PertanyaanModel;
 import com.example.projectfinalmobile.Networking.AIResponse;
 import com.example.projectfinalmobile.Networking.ApiService;
 import com.example.projectfinalmobile.Networking.OpenAIApiClient;
 import com.example.projectfinalmobile.R;
-import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ public class PembahasanActivity extends AppCompatActivity {
     private LinearLayout containerPembahasan;
     private LayoutInflater inflater;
     private ApiService apiService;
+    private KuisModel kuis;  // Jadikan field agar bisa dipakai di method lain
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,18 +45,26 @@ public class PembahasanActivity extends AppCompatActivity {
 
         containerPembahasan = findViewById(R.id.container_pembahasan);
         inflater = LayoutInflater.from(this);
-
         apiService = OpenAIApiClient.getGeminiService();
+        TextView skor = findViewById(R.id.skor);
 
-        KuisModel kuis = getIntent().getParcelableExtra("data_kuis");
+        int score = getIntent().getIntExtra("score", 0);
+        skor.setText(String.valueOf(score));
+
+        kuis = getIntent().getParcelableExtra("data_kuis");  // Simpan ke field
 
         if (kuis != null && kuis.getQuestions() != null) {
             tampilkanSemuaSoal(kuis.getQuestions());
         }
+
+        findViewById(R.id.btn_kembali).setOnClickListener(v -> finish());
     }
 
     private void tampilkanSemuaSoal(List<PertanyaanModel> listSoal) {
-        for (PertanyaanModel soal : listSoal) {
+        List<String> jawabanUser = kuis != null ? kuis.getJawabanUser() : null;  // Aman jika kuis null
+
+        for (int i = 0; i < listSoal.size(); i++) {
+            PertanyaanModel soal = listSoal.get(i);
             View cardView = inflater.inflate(R.layout.card_pembahasan, containerPembahasan, false);
 
             EditText edtPertanyaan = cardView.findViewById(R.id.pertanyaan);
@@ -68,7 +80,7 @@ public class PembahasanActivity extends AppCompatActivity {
 
             TextView pembahasan = cardView.findViewById(R.id.pembahasan);
 
-            // Disable all EditText inputs
+            // Disable input supaya tidak bisa diedit
             edtPertanyaan.setEnabled(false);
             opsi1.setEnabled(false);
             opsi2.setEnabled(false);
@@ -78,23 +90,52 @@ public class PembahasanActivity extends AppCompatActivity {
             edtPertanyaan.setText(soal.getQuestion());
 
             List<String> opsi = soal.getOptions();
+            String jawabanBenar = soal.getAnswer();
+            String jawabanUserSekarang = (jawabanUser != null && i < jawabanUser.size()) ? jawabanUser.get(i) : null;
+
             if (opsi != null && opsi.size() >= 4) {
                 opsi1.setText(opsi.get(0));
                 opsi2.setText(opsi.get(1));
                 opsi3.setText(opsi.get(2));
                 opsi4.setText(opsi.get(3));
 
-                String jawabanBenar = soal.getAnswer();
-
+                // Set tanda centang untuk jawaban benar
                 setCheckImage(check1, opsi.get(0), jawabanBenar);
                 setCheckImage(check2, opsi.get(1), jawabanBenar);
                 setCheckImage(check3, opsi.get(2), jawabanBenar);
                 setCheckImage(check4, opsi.get(3), jawabanBenar);
+
+                // Set background opsi sesuai jawaban user
+                if (jawabanUserSekarang != null) {
+                    if (jawabanUserSekarang.equalsIgnoreCase(opsi.get(0))) {
+                        opsi1.setBackgroundResource(
+                                opsi.get(0).equalsIgnoreCase(jawabanBenar) ? R.drawable.rounded_klik : R.drawable.bg_susah
+                        );
+                    }
+                    if (jawabanUserSekarang.equalsIgnoreCase(opsi.get(1))) {
+                        opsi2.setBackgroundResource(
+                                opsi.get(1).equalsIgnoreCase(jawabanBenar) ? R.drawable.rounded_klik : R.drawable.bg_susah
+                        );
+                    }
+                    if (jawabanUserSekarang.equalsIgnoreCase(opsi.get(2))) {
+                        opsi3.setBackgroundResource(
+                                opsi.get(2).equalsIgnoreCase(jawabanBenar) ? R.drawable.rounded_klik : R.drawable.bg_susah
+                        );
+                    }
+                    if (jawabanUserSekarang.equalsIgnoreCase(opsi.get(3))) {
+                        opsi4.setBackgroundResource(
+                                opsi.get(3).equalsIgnoreCase(jawabanBenar) ? R.drawable.rounded_klik : R.drawable.bg_susah
+                        );
+                    }
+                }
             }
 
             containerPembahasan.addView(cardView);
 
-            requestAIExplanation(soal.getQuestion(), pembahasan);
+            ImageView icLoading = cardView.findViewById(R.id.ic_loading);
+            TextView gagal_memuat = cardView.findViewById(R.id.gagal_memuat);
+
+            requestAIExplanation(soal.getQuestion(), pembahasan, icLoading, gagal_memuat);
         }
     }
 
@@ -107,79 +148,92 @@ public class PembahasanActivity extends AppCompatActivity {
         }
     }
 
-    private void requestAIExplanation(String prompt, TextView pembahasanTextView) {
-        // Jangan lupa escape karakter khusus di prompt
+    private void requestAIExplanation(String prompt, TextView pembahasanView, ImageView loadingGif, TextView gagalMemuat) {
+        pembahasanView.setVisibility(View.GONE);
+        gagalMemuat.setVisibility(View.GONE);
+        loadingGif.setVisibility(View.VISIBLE);
+
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.loading)
+                .into(loadingGif);
+
+        if (!isNetworkAvailable()) {
+            tampilkanKesalahan(loadingGif, gagalMemuat, prompt, pembahasanView);
+            return;
+        }
+
         String escapedPrompt = escapeJson(prompt);
-
-        String json = "{"
-                + "\"contents\": ["
-                + "  {"
-                + "    \"parts\": ["
-                + "      {\"text\": \"" + escapedPrompt + "\"}"
-                + "    ]"
-                + "  }"
-                + "]"
-                + "}";
-
+        String json = "{ \"contents\": [ { \"parts\": [ {\"text\": \"" + escapedPrompt + "\"} ] } ] }";
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
 
         apiService.getAIExplanation(body).enqueue(new Callback<AIResponse>() {
             @Override
             public void onResponse(Call<AIResponse> call, Response<AIResponse> response) {
-                if (response.isSuccessful()) {
-                    AIResponse body = response.body();
-                    if (body != null) {
-                        Log.d("PembahasanActivity", "Response body: " + new Gson().toJson(body));
-                        String resultText = extractExplanationText(body);
-                        if (!TextUtils.isEmpty(resultText)) {
-                            pembahasanTextView.setText(resultText);
-                        } else {
-                            pembahasanTextView.setText("Pembahasan tidak tersedia.");
-                        }
-                    } else {
-                        pembahasanTextView.setText("Response body kosong.");
-                    }
+                loadingGif.setVisibility(View.GONE);
+                gagalMemuat.setVisibility(View.GONE);
+                pembahasanView.setVisibility(View.VISIBLE);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    String result = extractExplanationText(response.body());
+                    pembahasanView.setText(!TextUtils.isEmpty(result) ? result : "Pembahasan tidak tersedia.");
                 } else {
-                    try {
-                        String errorBody = response.errorBody().string();
-                        Log.e("PembahasanActivity", "Response error: " + response.code() + " " + response.message() + ", details: " + errorBody);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    pembahasanTextView.setText("Gagal mendapatkan pembahasan.");
+                    tampilkanErrorLog(response);
+                    pembahasanView.setText("Gagal mendapatkan pembahasan.");
                 }
             }
 
             @Override
             public void onFailure(Call<AIResponse> call, Throwable t) {
-                pembahasanTextView.setText("Error: " + t.getMessage());
+                tampilkanKesalahan(loadingGif, gagalMemuat, prompt, pembahasanView);
             }
         });
     }
 
+    private void tampilkanKesalahan(ImageView loadingGif, TextView gagalMemuat, String prompt, TextView pembahasanView) {
+        loadingGif.setVisibility(View.VISIBLE);
+        gagalMemuat.setVisibility(View.VISIBLE);
+        pembahasanView.setVisibility(View.GONE);
+
+        loadingGif.setOnClickListener(v -> {
+            if (isNetworkAvailable()) {
+                loadingGif.setOnClickListener(null); // hentikan loop klik
+                requestAIExplanation(prompt, pembahasanView, loadingGif, gagalMemuat);
+            }
+        });
+    }
+
+    private void tampilkanErrorLog(Response<AIResponse> response) {
+        try {
+            String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
+            Log.e("PembahasanActivity", "Error: " + response.code() + " " + response.message() + " | " + errorBody);
+        } catch (Exception e) {
+            Log.e("PembahasanActivity", "Exception while reading errorBody", e);
+        }
+    }
 
     private String extractExplanationText(AIResponse response) {
-        if (response == null || response.candidates == null || response.candidates.isEmpty()) {
-            return null;
-        }
-
+        if (response == null || response.candidates == null || response.candidates.isEmpty()) return null;
         AIResponse.Candidate candidate = response.candidates.get(0);
-        if (candidate.content == null || candidate.content.parts == null || candidate.content.parts.isEmpty()) {
-            return null;
-        }
+        if (candidate.content == null || candidate.content.parts == null) return null;
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         for (AIResponse.Part part : candidate.content.parts) {
             if (part.text != null) {
-                sb.append(part.text);
+                result.append(part.text);
             }
         }
-
-        return sb.toString();
+        return result.toString();
     }
 
     private String escapeJson(String input) {
-        if (input == null) return "";
-        return input.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
+        return input == null ? "" : input.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return false;
+        NetworkInfo active = cm.getActiveNetworkInfo();
+        return active != null && active.isConnected();
     }
 }
