@@ -16,7 +16,7 @@ public class GeminiClient {
     private static final String BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
     // API KEY dari Google AI Studio, contoh:
-    private static final String API_KEY = "AIzaSyCoEjGTJ6KFvuRO6WRmo4P_iPLFA2dv9KQ"; // ganti dengan kunci aslimu
+    private static final String API_KEY = "hshs"; // ganti dengan kunci aslimu
 
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
