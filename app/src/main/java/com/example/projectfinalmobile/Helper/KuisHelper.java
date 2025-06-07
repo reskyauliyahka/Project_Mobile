@@ -92,10 +92,6 @@ public class KuisHelper {
         return exists;
     }
 
-    public int delete(int id) {
-        return database.delete(DatabaseContract.Kuis.TABLE_NAME,
-                DatabaseContract.Kuis._ID + "=?", new String[]{String.valueOf(id)});
-    }
 
     public boolean isKuisExist(String judul) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -139,10 +135,6 @@ public class KuisHelper {
 
     public long insertKuisLengkap(KuisModel kuis, SQLiteDatabase db) {
 
-//        if (isKuisDuplicate(kuis, db)) {
-//            // Return -1 untuk menandakan tidak ada penyisipan karena duplikat
-//            return -1;
-//        }
         ContentValues values = new ContentValues();
         if (kuis.getId() != 0) {
             values.put(DatabaseContract.Kuis._ID, kuis.getId());
@@ -419,6 +411,55 @@ public class KuisHelper {
 
         return daftarKuis;
     }
+
+    public boolean deleteFullKuisById(int kuisId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        boolean success = false;
+
+        try {
+            // Step 1: Ambil semua pertanyaan dari kuis ini
+            Cursor cursorPertanyaan = db.query(
+                    DatabaseContract.Pertanyaan.TABLE_NAME,
+                    new String[]{DatabaseContract.Pertanyaan._ID},
+                    DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
+                    new String[]{String.valueOf(kuisId)},
+                    null, null, null
+            );
+
+            if (cursorPertanyaan != null) {
+                while (cursorPertanyaan.moveToNext()) {
+                    int pertanyaanId = cursorPertanyaan.getInt(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan._ID));
+
+                    // Step 2: Hapus semua opsi jawaban terkait pertanyaan ini
+                    db.delete(DatabaseContract.OpsiJawaban.TABLE_NAME,
+                            DatabaseContract.OpsiJawaban.PERTANYAAN_ID + " = ?",
+                            new String[]{String.valueOf(pertanyaanId)});
+                }
+                cursorPertanyaan.close();
+            }
+
+            // Step 3: Hapus semua pertanyaan dari kuis ini
+            db.delete(DatabaseContract.Pertanyaan.TABLE_NAME,
+                    DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
+                    new String[]{String.valueOf(kuisId)});
+
+            // Step 4: Hapus kuis dari tabel Kuis
+            db.delete(DatabaseContract.Kuis.TABLE_NAME,
+                    DatabaseContract.Kuis._ID + " = ?",
+                    new String[]{String.valueOf(kuisId)});
+
+            db.setTransactionSuccessful();
+            success = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+
+        return success;
+    }
+
 
 
 

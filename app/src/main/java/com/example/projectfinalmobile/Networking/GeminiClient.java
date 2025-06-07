@@ -11,13 +11,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GeminiClient {
-
-    // URL dasar Gemini API, tanpa ?key=... (key dikirim header atau query parameter)
     private static final String BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-
-    // API KEY dari Google AI Studio, contoh:
-    private static final String API_KEY = "hshs"; // ganti dengan kunci aslimu
-
+    private static final String API_KEY = "";
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
 
@@ -28,7 +23,6 @@ public class GeminiClient {
                         @Override
                         public Response intercept(Chain chain) throws IOException {
                             Request original = chain.request();
-                            // Tambahkan API key sebagai query parameter
                             HttpUrl originalHttpUrl = original.url();
                             HttpUrl url = originalHttpUrl.newBuilder()
                                     .addQueryParameter("key", API_KEY)
@@ -44,7 +38,7 @@ public class GeminiClient {
                     }).build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL + "/")  // Tambahkan "/" supaya Retrofit valid
+                    .baseUrl(BASE_URL + "/")
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

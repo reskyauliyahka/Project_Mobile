@@ -96,22 +96,24 @@ public class KerjakanActivity extends AppCompatActivity {
                 AktivitasKuisHelper aktivitasHelper = new AktivitasKuisHelper(this);
                 String tanggalSekarang = getTanggalHariIni();
 
-                long result = aktivitasHelper.insertAktivitasKuis(userId, kuisId, skor, tanggalSekarang, db);
+                // Panggil insert dengan menambahkan list jawaban pengguna
+                long result = aktivitasHelper.insertAktivitasKuis(userId, kuisId, skor, tanggalSekarang, jawabanPengguna, db);
                 if (result > 0) {
-                    Toast.makeText(this, "Berhasil menyimpan aktivitas kuis id" + kuisId, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Berhasil menyimpan aktivitas kuis id " + kuisId, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Gagal menyimpan aktivitas", Toast.LENGTH_SHORT).show();
                 }
 
+                kuis.setJawabanUser(jawabanPengguna);
 
                 Intent intent = new Intent(KerjakanActivity.this, ScoreActivity.class);
                 intent.putExtra("score", skor);
                 intent.putExtra("data_kuis", kuis);
                 startActivity(intent);
                 finish();
-
             }
         });
+
 
         btnSimpan.setText(pertanyaanList.size() == 1 ? "Kirim" : "Selanjutnya");
 
@@ -157,8 +159,7 @@ public class KerjakanActivity extends AppCompatActivity {
         View.OnClickListener opsiClickListener = v -> {
             resetCheckIcons(check1, check2, check3, check4);
             ImageView clicked = (ImageView) v;
-            clicked.setImageResource(R.drawable.accept);
-            clicked.setImageTintList(null);
+            clicked.setImageResource(R.drawable.bulat_penuh);
 
             if (v == check1) jawabanDipilih = opsi1.getText().toString();
             else if (v == check2) jawabanDipilih = opsi2.getText().toString();
@@ -176,7 +177,7 @@ public class KerjakanActivity extends AppCompatActivity {
 
     private void resetCheckIcons(ImageView... checks) {
         for (ImageView check : checks) {
-            check.setImageResource(R.drawable.check);
+            check.setImageResource(R.drawable.bulat_kosong);
         }
     }
 

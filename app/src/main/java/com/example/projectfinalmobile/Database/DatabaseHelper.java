@@ -58,7 +58,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.AktivitasKuis.USER_ID + " INTEGER, " +
                 DatabaseContract.AktivitasKuis.KUIS_ID + " INTEGER, " +
                 DatabaseContract.AktivitasKuis.SKOR + " INTEGER, " +
-                DatabaseContract.AktivitasKuis.TANGGAL + " TEXT)";
+                DatabaseContract.AktivitasKuis.TANGGAL + " TEXT," +
+                DatabaseContract.AktivitasKuis.LIST_JAWABAN_USER + " TEXT)";
 
         db.execSQL(SQL_CREATE_USERS);
         db.execSQL(SQL_CREATE_KUIS);

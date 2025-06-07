@@ -54,6 +54,16 @@
             android:layout_gravity="center"
             android:gravity="center"
             >
+            <ImageView
+                android:id="@+id/btn_edit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="end"
+                android:src="@drawable/pencil"
+                android:tint="@color/utama"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"
+                />
             <LinearLayout
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -127,6 +137,7 @@
                 android:layout_height="20dp"
                 android:src="@drawable/bookmark_kosong"
                 android:layout_gravity="end"
+                android:tint="@color/utama"
                 />
             
         </LinearLayout>
@@ -241,6 +252,20 @@
         android:orientation="horizontal"
         android:layout_margin="20dp"
         >
+        <Button
+            android:id="@+id/btn_hapus"
+            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_susah"
+            android:text="Hapus"
+            android:textColor="@color/teks_susah"
+            android:fontFamily="@font/nexaheavy"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            />
         <Button
             android:id="@+id/btn_kerjakan"
             android:layout_marginStart="10dp"

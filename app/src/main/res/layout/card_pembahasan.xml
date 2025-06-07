@@ -239,7 +239,6 @@
             android:id="@+id/gagal_memuat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:text="Gagal memuat kuis"
             android:textColor="@color/text"
             android:fontFamily="@font/nexaheavy"
@@ -251,7 +250,7 @@
 
         <TextView
             android:id="@+id/pembahasan"
-            android:layout_marginStart="10dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
