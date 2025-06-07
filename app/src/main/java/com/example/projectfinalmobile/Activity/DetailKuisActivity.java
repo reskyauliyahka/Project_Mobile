@@ -172,7 +172,7 @@ public class DetailKuisActivity extends AppCompatActivity {
                 btn_kerjakan.setText("Lihat Pembahasan");
                 btn_kerjakan.setOnClickListener(v -> {
                     Intent intent = new Intent(this, PembahasanActivity.class);
-                    intent.putExtra("kuis_id", kuisId);
+                    intent.putExtra("data_kuis", kuis);
                     startActivity(intent);
                 });
 
