@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginBottom="20dp"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_pertanyaan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="2dp"
+        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_marginBottom="10dp"
+        >
+
+        <LinearLayout
+            android:background="@drawable/rounded_unklik"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingBottom="10dp"
+
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/nexaheavy"
+                android:paddingVertical="10dp"
+                android:text="Pertanyaan"
+                android:textColor="@color/utama"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/pertanyaan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_unklik"
+                android:hint="pertanyaan"
+                android:padding="10dp"
+                android:textColorHint="#89009C9E"
+                android:textColor="@color/utama"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nexaheavy"
+                android:paddingVertical="10dp"
+                android:text="Pilihan Jawaban"
+                android:textColor="@color/utama"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nexaheavy"
+                android:paddingVertical="10dp"
+                android:text="Pilihan 1"
+                android:textColor="@color/utama"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/opsi1"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_unklik"
+                    android:hint="pilihan 1"
+                    android:padding="10dp"
+                    android:textColorHint="#89009C9E"
+                    android:textColor="@color/utama"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/accept_opsi1"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:tint="@color/utama"
+                    android:src="@drawable/check" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nexaheavy"
+                android:paddingVertical="10dp"
+                android:text="Pilihan 2"
+                android:textColor="@color/utama"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/opsi2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_unklik"
+                    android:hint="pilihan 2"
+                    android:padding="10dp"
+                    android:textColorHint="#89009C9E"
+                    android:textColor="@color/utama"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/accept_opsi2"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:tint="@color/utama"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/check" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nexaheavy"
+                android:paddingVertical="10dp"
+                android:text="Pilihan 3"
+                android:textColor="@color/utama"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/opsi3"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/utama"
+                    android:background="@drawable/rounded_unklik"
+                    android:hint="pilihan 3"
+                    android:padding="10dp"
+                    android:textColorHint="#89009C9E"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/accept_opsi3"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:tint="@color/utama"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/check" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nexaheavy"
+                android:paddingVertical="10dp"
+                android:text="Pilihan 4"
+                android:textColor="@color/utama"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/opsi4"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_unklik"
+                    android:hint="pilihan 4"
+                    android:padding="10dp"
+                    android:textColor="@color/utama"
+                    android:textColorHint="#89009C9E"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/accept_opsi4"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:tint="@color/utama"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/check" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_klik"
+        android:padding="10dp"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pembahasan"
+            android:textColor="@color/utama"
+            android:textSize="16sp"
+            android:fontFamily="@font/nexaheavy"
+            />
+
+        <ImageView
+            android:id="@+id/ic_loading"
+            android:layout_marginTop="20dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/loading"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/gagal_memuat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="Gagal memuat kuis"
+            android:textColor="@color/text"
+            android:fontFamily="@font/nexaheavy"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone"
+
+            />
+
+        <TextView
+            android:id="@+id/pembahasan"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="sjahsjjjjjjjjjjsahaksjkjkswddd"
+            android:textSize="14sp"
+            android:textColor="@color/utama"
+            />
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

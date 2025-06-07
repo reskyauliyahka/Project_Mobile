@@ -104,18 +104,9 @@ public class KerjakanActivity extends AppCompatActivity {
                 }
 
 
-
-////                if (kuisId != -1) {
-//                    AktivitasKuisHelper aktivitasHelper = new AktivitasKuisHelper(this);
-//                    String tanggalSekarang = getTanggalHariIni();
-//
-//                    aktivitasHelper.insertAktivitasKuis(userId, kuisId, skor, tanggalSekarang, db);
-////                } else {
-////                    Toast.makeText(this, "Kuis sudah pernah dikerjakan sebelumnya", Toast.LENGTH_SHORT).show();
-////                }
-
                 Intent intent = new Intent(KerjakanActivity.this, ScoreActivity.class);
                 intent.putExtra("score", skor);
+                intent.putExtra("data_kuis", kuis);
                 startActivity(intent);
                 finish();
 
@@ -167,6 +158,7 @@ public class KerjakanActivity extends AppCompatActivity {
             resetCheckIcons(check1, check2, check3, check4);
             ImageView clicked = (ImageView) v;
             clicked.setImageResource(R.drawable.accept);
+            clicked.setImageTintList(null);
 
             if (v == check1) jawabanDipilih = opsi1.getText().toString();
             else if (v == check2) jawabanDipilih = opsi2.getText().toString();
