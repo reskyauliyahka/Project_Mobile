@@ -1,15 +1,22 @@
 package com.example.projectfinalmobile.Activity;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.example.projectfinalmobile.Helper.AktivitasKuisHelper;
 import com.example.projectfinalmobile.Helper.KuisHelper;
@@ -33,6 +40,7 @@ public class TinjauJawabanActivity extends AppCompatActivity {
     private AktivitasKuisHelper aktivitasKuisHelper;
     private KuisHelper kuisHelper;
     private TextView totalJawabanText;
+    private Button lihatUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +59,24 @@ public class TinjauJawabanActivity extends AppCompatActivity {
 
         // Ambil data kuis dari Intent
         KuisModel kuis = getIntent().getParcelableExtra("data_kuis");
+        int kuisId = kuisHelper.getIdByTitle(kuis.getTitle());
         if (kuis != null) {
-            int kuisId = kuisHelper.getIdByTitle(kuis.getTitle());
             tampilkanSemuaSoalTanpaOpsi(kuis.getQuestions(), kuisId);
         }
+
+        lihatUser = findViewById(R.id.lihatUser);
+        lihatUser.setOnClickListener(v -> {
+            tampilkanDaftarUserYangMengerjakan(kuisId);
+
+        });
+
+
+        List<Map<String, Object>> daftarUser2 = aktivitasKuisHelper.getUserYangMengerjakanKuis(kuisId);
+        int totalJawabanKuis = daftarUser2.size();
+
+        totalJawabanText.setText(String.valueOf(totalJawabanKuis));
+
+
 
 
     }
@@ -64,7 +86,6 @@ public class TinjauJawabanActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         containerPertanyaan.removeAllViews();
 
-        int totalSeluruhJawaban = 0;
 
         for (int i = 0; i < listSoal.size(); i++) {
             PertanyaanModel soal = listSoal.get(i);
@@ -85,7 +106,6 @@ public class TinjauJawabanActivity extends AppCompatActivity {
                 totalJawaban += jumlah;
             }
             int jumlahSalah = totalJawaban - jumlahBenar;
-            totalSeluruhJawaban += totalJawaban;
 
 
             // Siapkan data PieChart
@@ -114,18 +134,72 @@ public class TinjauJawabanActivity extends AppCompatActivity {
             pieChart.setData(data);
             pieChart.setUsePercentValues(false);
             pieChart.setEntryLabelTextSize(14f);
-            pieChart.setEntryLabelColor(Color.BLACK);
+            int warnaHitam = ContextCompat.getColor(this, R.color.black);
+            pieChart.setEntryLabelColor(warnaHitam);
             pieChart.getDescription().setEnabled(false);
             pieChart.setDrawHoleEnabled(false);
             pieChart.getLegend().setEnabled(true);
             pieChart.invalidate();
-
+            pieChart.getLegend().setTextColor(warnaHitam);
 
             containerPertanyaan.addView(cardView);
         }
 
-        if (totalJawabanText != null) {
-            totalJawabanText.setText(String.valueOf(totalSeluruhJawaban));
-        }
     }
+
+    private void tampilkanDaftarUserYangMengerjakan(int kuisId) {
+        List<Map<String, Object>> daftarUser = aktivitasKuisHelper.getUserYangMengerjakanKuis(kuisId);
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(40, 20, 40, 20);
+
+        for (Map<String, Object> userData : daftarUser) {
+            View userCard = inflater.inflate(R.layout.card_user, null);
+
+            TextView usernameView = userCard.findViewById(R.id.username);
+            TextView skorView = userCard.findViewById(R.id.skor);
+            ImageView fotoProfilView = userCard.findViewById(R.id.foto_profil);
+
+            String usernameStr = (String) userData.get("username");
+            int skorInt = (int) userData.get("skor");
+            String fotoProfilStr = (String) userData.get("foto_profil");
+
+            usernameView.setText(usernameStr);
+            skorView.setText(String.valueOf(skorInt));
+
+            if (fotoProfilStr != null && !fotoProfilStr.isEmpty()) {
+                try {
+                    Uri uri = Uri.parse(fotoProfilStr);
+                    fotoProfilView.setImageURI(uri);
+                } catch (Exception e) {
+                    fotoProfilView.setImageResource(R.drawable.userprofil); // fallback image
+                }
+            } else {
+                fotoProfilView.setImageResource(R.drawable.userprofil);
+            }
+
+            container.addView(userCard);
+        }
+
+        TextView title = new TextView(this);
+        title.setText("User yang telah mengerjakan kuis");
+        title.setPadding(20, 40, 40, 40);
+        title.setTextSize(16f);
+        title.setTextColor(ContextCompat.getColor(this, R.color.utama));
+        title.setTypeface(ResourcesCompat.getFont(this, R.font.nexaheavy));
+        title.setGravity(Gravity.CENTER);
+
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setCustomTitle(title)
+                .setView(container)
+                .setPositiveButton("Tutup", null)
+                .show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.utama));
+    }
+
 }

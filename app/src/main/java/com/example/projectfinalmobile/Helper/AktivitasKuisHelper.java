@@ -178,32 +178,34 @@ public class AktivitasKuisHelper {
         return statistik; // key = indeks soal, value = map jawaban A/B/C/D -> jumlah user
     }
 
-    public List<Map<String, String>> getUserInfoAndScoreByKuisId(int kuisId) {
-        List<Map<String, String>> userList = new ArrayList<>();
+    public List<Map<String, Object>> getUserYangMengerjakanKuis(int kuisId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String query = "SELECT u.id, u.username, u.foto_profil, ak.skor " +
-                "FROM " + DatabaseContract.AktivitasKuis.TABLE_NAME + " ak " +
+        String query = "SELECT u.username, u.profile_picture, a.skor FROM " +
+                DatabaseContract.AktivitasKuis.TABLE_NAME + " a " +
                 "JOIN " + DatabaseContract.Users.TABLE_NAME + " u " +
-                "ON ak." + DatabaseContract.AktivitasKuis.USER_ID + " = u." + DatabaseContract.Users._ID + " " +
-                "WHERE ak." + DatabaseContract.AktivitasKuis.KUIS_ID + " = ?";
+                "ON a." + DatabaseContract.AktivitasKuis.USER_ID + " = u." + DatabaseContract.Users._ID +
+                " WHERE a." + DatabaseContract.AktivitasKuis.KUIS_ID + " = ?";
 
-        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(kuisId)});
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(kuisId)});
 
-        if (cursor != null && cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             do {
-                Map<String, String> user = new HashMap<>();
-                user.put("id", String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("id"))));
-                user.put("username", cursor.getString(cursor.getColumnIndexOrThrow("username")));
-                user.put("foto_profil", cursor.getString(cursor.getColumnIndexOrThrow("foto_profil")));
-                user.put("skor", String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("skor"))));
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("username", cursor.getString(cursor.getColumnIndexOrThrow("username")));
+                userMap.put("skor", cursor.getInt(cursor.getColumnIndexOrThrow("skor")));
+                userMap.put("foto_profil", cursor.getString(cursor.getColumnIndexOrThrow("profile_picture")));
 
-                userList.add(user);
+                // kamu bisa menambahkan `foto_profil` jika sudah tersedia
+                result.add(userMap);
             } while (cursor.moveToNext());
-            cursor.close();
         }
 
-        return userList;
+        cursor.close();
+        return result;
     }
+
 
 
 

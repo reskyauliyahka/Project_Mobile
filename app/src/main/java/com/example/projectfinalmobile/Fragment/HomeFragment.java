@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerKuis;
     private KuisAdapter kuisAdapter;
     private TextView lihatSemua, gagalMemuat, username;
-    private ImageView icLoading;
+    private ImageView icLoading, tutorialImage, btnNext, btnPrev;
 
     public HomeFragment() {}
 
@@ -91,6 +91,35 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SemuaKuisActivity.class);
             startActivity(intent);
         });
+
+        tutorialImage = view.findViewById(R.id.tutorialViewPager);
+        btnNext = view.findViewById(R.id.btnNext);
+        btnPrev = view.findViewById(R.id.btnPrev);
+
+        int[] tutorialImages = {
+                R.drawable.img3,
+                R.drawable.img4,
+                R.drawable.img5
+        };
+
+        int[] currentIndex = {0};
+
+        tutorialImage.setImageResource(tutorialImages[currentIndex[0]]);
+
+        btnNext.setOnClickListener(v -> {
+            if (currentIndex[0] < tutorialImages.length - 1) {
+                currentIndex[0]++;
+                tutorialImage.setImageResource(tutorialImages[currentIndex[0]]);
+            }
+        });
+
+        btnPrev.setOnClickListener(v -> {
+            if (currentIndex[0] > 0) {
+                currentIndex[0]--;
+                tutorialImage.setImageResource(tutorialImages[currentIndex[0]]);
+            }
+        });
+
 
 
         return view;

@@ -51,8 +51,8 @@
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="5dp"
@@ -64,23 +64,68 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="10dp">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tingkatkan Kecerdasan"
+                    android:text="Simpan Kuis untuk Akses Offline"
                     android:textSize="14sp"
                     android:fontFamily="@font/nexaheavy"
                     android:textColor="#ffffff"
                     android:layout_gravity="center"
+                    android:gravity="center"
                     />
-                <ImageView
+
+                <LinearLayout
                     android:layout_marginTop="10dp"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/statik"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="1. Buka kuis yang kamu suka.\n2. Tekan tombol bookmark Simpan ke Favorit.\n3. Kuis otomatis tersedia offline di menu Favorit."
+                        android:textSize="12sp"
+                        android:fontFamily="@font/nexaheavy"
+                        android:textColor="#ffffff"
+                        android:layout_gravity="center"
+
+                        />
+                    <ImageView
+                        android:id="@+id/tutorialViewPager"
+                        android:layout_width="100dp"
+                        android:layout_height="130dp"
+                        android:src="@drawable/img3"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_gravity="center"
-                    />
+                    android:paddingTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/btnPrev"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:tint="#ffffff"
+                        android:src="@drawable/left"/>
+
+                    <Space
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/btnNext"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:tint="#ffffff"
+                        android:src="@drawable/right"/>
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -103,7 +148,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rekomendasi Kuis"
+                android:text="Daftar Kuis"
                 android:textColor="@color/text"
                 android:fontFamily="@font/nexaheavy"
                 android:textSize="16sp"

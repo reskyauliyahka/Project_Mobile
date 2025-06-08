@@ -25,7 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tinjau Jawaban"
+                android:text="Tinjau Responden"
                 android:textColor="@color/utama2"
                 android:textSize="24sp"
                 android:fontFamily="@font/nexaheavy"
@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Jawaban:"
+                android:text="Total Responden:"
                 android:textColor="@color/utama2"
                 android:textSize="16sp"
                 android:fontFamily="@font/nexaheavy"
@@ -83,14 +83,15 @@
                 android:layout_weight="1"
                 />
             <Button
+                android:id="@+id/lihatUser"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:background="@drawable/rounded_klik"
-                android:text="Lihat User"
+                android:background="@drawable/rounded_unklik"
+                android:text="Lihat Responden"
                 android:textAllCaps="false"
                 android:textColor="@color/utama"
                 android:fontFamily="@font/nexaheavy"
-                android:paddingHorizontal="20dp"
+                android:paddingHorizontal="10dp"
                 />
         </LinearLayout>
 
@@ -103,6 +104,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             >
 
             <Button
@@ -110,7 +112,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="40dp"
-                android:background="@drawable/rounded_unklik"
+                android:background="@drawable/rounded_klik"
                 android:text="Keluar"
                 android:fontFamily="@font/nexaheavy"
                 android:textAllCaps="false"

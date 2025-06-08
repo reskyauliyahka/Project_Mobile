@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:padding="10dp"
-                android:background="@drawable/rounded_unklik" />
+               />
 
 
         </LinearLayout>

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class DetailKuisActivity extends AppCompatActivity {
+    LinearLayout linearskor ;
     ImageView tvImage, btn_kembali, btn_favorit,  btn_edit;
     Button btn_kerjakan, btn_hapus;
     TextView tvJudul, tvKategori, tvTingkatKesulitan, tvTipe, tvjumlah_soal, belum_mengerjakan, score, text_score;
@@ -43,6 +45,7 @@ public class DetailKuisActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_kuis);
 
+        linearskor = findViewById(R.id.linearskor);
         tvImage = findViewById(R.id.img_kuis);
         tvJudul = findViewById(R.id.judul_kuis);
         tvKategori = findViewById(R.id.kategori_kuis);
@@ -167,7 +170,8 @@ public class DetailKuisActivity extends AppCompatActivity {
                 btn_edit.setVisibility(View.VISIBLE);
                 btn_hapus.setVisibility(View.VISIBLE);
 
-                btn_kerjakan.setText("Tinjau Jawaban");
+                btn_kerjakan.setText("Tinjau Responden");
+                linearskor.setVisibility(View.GONE);
 
                 btn_kerjakan.setOnClickListener(v -> {
                     Intent intent = new Intent(this, TinjauJawabanActivity.class);
