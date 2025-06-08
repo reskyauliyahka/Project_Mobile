@@ -117,9 +117,26 @@ public class DibuatFragment extends Fragment {
         recyclerKuis.setVisibility(View.GONE);
 
         new android.os.Handler().postDelayed(() -> {
-            SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-            String userId = String.valueOf(sharedPreferences.getInt("user_id", -1));
-            if (userId.equals("-1")) return;
+
+            Context context = getContext();
+            if (context == null) {
+                // Context null, skip load data supaya tidak crash
+                icLoading.setVisibility(View.GONE);
+                noData.setVisibility(View.VISIBLE);
+                recyclerKuis.setVisibility(View.GONE);
+                return;
+            }
+
+            SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            int userIdInt = sharedPreferences.getInt("user_id", -1);
+            if (userIdInt == -1) {
+                // User ID tidak valid, bisa juga tampilkan pesan atau skip
+                icLoading.setVisibility(View.GONE);
+                noData.setVisibility(View.VISIBLE);
+                recyclerKuis.setVisibility(View.GONE);
+                return;
+            }
+            String userId = String.valueOf(userIdInt);
 
             String selectedKategori = spinnerKategori.getSelectedItem().toString();
             String selectedTipe = spinnerTipe.getSelectedItem().toString();
@@ -159,6 +176,7 @@ public class DibuatFragment extends Fragment {
 
         }, 1000);
     }
+
 
     @Override
     public void onResume() {

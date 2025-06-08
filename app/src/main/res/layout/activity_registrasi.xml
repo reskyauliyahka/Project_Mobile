@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="#ffffff"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Activity.RegistrasiActivity"
     android:orientation="vertical">
@@ -57,7 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="#ffffff"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
             >
@@ -116,11 +116,11 @@
 
                 <ImageView
                     android:id="@+id/hide"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/hide"
                     android:layout_gravity="center"
-                    android:tint="@color/text"
+                    android:tint="@color/utama"
                     android:contentDescription="Toggle Password Visibility"
                     />
 

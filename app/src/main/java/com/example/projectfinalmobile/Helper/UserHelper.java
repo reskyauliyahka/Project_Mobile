@@ -88,7 +88,7 @@ public class UserHelper {
 
         return database.query(
                 DatabaseContract.Users.TABLE_NAME,
-                new String[]{DatabaseContract.Users.USERNAME, DatabaseContract.Users.EMAIL},
+                new String[]{DatabaseContract.Users.USERNAME, DatabaseContract.Users.EMAIL, DatabaseContract.Users.PROFILE_PICTURE},
                 DatabaseContract.Users._ID + "=?",
                 new String[]{String.valueOf(userId)},
                 null, null, null

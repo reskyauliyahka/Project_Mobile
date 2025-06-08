@@ -106,6 +106,7 @@ public class RegistrasiActivity extends AppCompatActivity {
         values.put(DatabaseContract.Users.USERNAME, username);
         values.put(DatabaseContract.Users.EMAIL, email);
         values.put(DatabaseContract.Users.PASSWORD, password);
+        values.putNull(DatabaseContract.Users.PROFILE_PICTURE);
 
         long result = usersHelper.insert(values);
         if (result > 0) {

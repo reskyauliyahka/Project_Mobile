@@ -12,6 +12,7 @@ import com.example.projectfinalmobile.Fragment.BuatFragment;
 import com.example.projectfinalmobile.Fragment.FavoriteFragment;
 import com.example.projectfinalmobile.Fragment.HomeFragment;
 import com.example.projectfinalmobile.Fragment.ProfilFragment;
+import com.example.projectfinalmobile.Model.KuisModel;
 import com.example.projectfinalmobile.ThemeHelper;
 import com.example.projectfinalmobile.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -39,8 +40,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         bottomNav = findViewById(R.id.bottom_navigation);
+        KuisModel kuisModel = getIntent().getParcelableExtra("data_kuis");
 
-        loadFragment(new HomeFragment());
+        if (getIntent() != null && getIntent().hasExtra("data_kuis")) {
+            // Kirim data ke fragment
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("data_kuis", kuisModel);
+
+            BuatFragment buatFragment = new BuatFragment();
+            buatFragment.setArguments(bundle);
+
+            loadFragment(buatFragment);
+            bottomNav.setSelectedItemId(R.id.tambah); // opsional: update bottom navigation
+        } else {
+            // Default: load HomeFragment
+            loadFragment(new HomeFragment());
+        }
 
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;

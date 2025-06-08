@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.projectfinalmobile.Model.KuisModel;
 import com.example.projectfinalmobile.R;
+import com.squareup.picasso.Picasso;
 
 public class InputDetailFragment extends Fragment {
 
@@ -32,11 +33,13 @@ public class InputDetailFragment extends Fragment {
     private Spinner kategori, tipe, tingkat_kesulitan;
     private Button selanjutnya;
     private Uri imageUri;
+    private KuisModel kuis = null;
 
-    // Interface untuk callback ke BuatFragment
+
     public interface OnNextClickListener {
-        void onNextClicked(String judul, String kategori, String tipe, String tingkatKesulitan, Uri imgUri);
+        void onNextClicked(KuisModel kuis, String judul, String kategori, String tipe, String tingkatKesulitan, Uri imgUri);
     }
+
 
     private OnNextClickListener listener;
 
@@ -67,6 +70,7 @@ public class InputDetailFragment extends Fragment {
         tingkat_kesulitan = view.findViewById(R.id.tingkat_kesulitan);
         selanjutnya = view.findViewById(R.id.selanjutnya);
 
+        // Set adapters
         ArrayAdapter<CharSequence> adapterKategori = ArrayAdapter.createFromResource(
                 requireContext(), R.array.kategori_kuis, android.R.layout.simple_spinner_item);
         adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -82,8 +86,48 @@ public class InputDetailFragment extends Fragment {
         adapterTingkat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         tingkat_kesulitan.setAdapter(adapterTingkat);
 
+        // Ambil data dari arguments
+        Bundle args = getArguments();
+        if (args != null && args.containsKey("data_kuis")) {
+            kuis = args.getParcelable("data_kuis");
+            if (kuis != null) {
+                judul.setText(kuis.getTitle());
+
+                // Set spinner selection
+                if (kuis.getCategory() != null) {
+                    int kategoriPos = adapterKategori.getPosition(kuis.getCategory());
+                    if (kategoriPos >= 0) kategori.setSelection(kategoriPos);
+                }
+
+                if (kuis.getType() != null) {
+                    int tipePos = adapterTipe.getPosition(kuis.getType());
+                    if (tipePos >= 0) tipe.setSelection(tipePos);
+                }
+
+                if (kuis.getDifficulty() != null) {
+                    int tingkatPos = adapterTingkat.getPosition(kuis.getDifficulty());
+                    if (tingkatPos >= 0) tingkat_kesulitan.setSelection(tingkatPos);
+                }
+
+                if (kuis.getId_Image() != null && !kuis.getId_Image().isEmpty()) {
+                    Picasso.get()
+                            .load(kuis.getId_Image())
+                            .placeholder(R.drawable.logout)
+                            .error(R.drawable.accept)
+                            .fit()
+                            .centerCrop()
+                            .into(img);
+
+                    imageUri = Uri.parse(kuis.getId_Image()); // Simpan URI jika diperlukan nanti
+                }
+            }
+        }
+
+        // Image picker
         img.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
@@ -101,8 +145,21 @@ public class InputDetailFragment extends Fragment {
                 return;
             }
 
-            listener.onNextClicked(judulText, kategoriText, tipeText, tingkatText, imageUri);
+            // Update dataKuis jika ada, atau buat baru jika tidak ada
+            if (kuis == null) {
+                kuis = new KuisModel();
+            }
+            kuis.setTitle(judulText);
+            kuis.setCategory(kategoriText);
+            kuis.setType(tipeText);
+            kuis.setDifficulty(tingkatText);
+            if (imageUri != null) {
+                kuis.setId_image(imageUri.toString());
+            }
+
+            listener.onNextClicked(kuis, judulText, kategoriText, tipeText, tingkatText, imageUri);
         });
+
 
         return view;
     }
@@ -113,6 +170,12 @@ public class InputDetailFragment extends Fragment {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
+
+            requireContext().getContentResolver().takePersistableUriPermission(
+                    imageUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+            );
+
             img.setImageURI(imageUri);
         }
     }

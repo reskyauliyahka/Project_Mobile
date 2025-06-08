@@ -169,8 +169,14 @@ public class DetailKuisActivity extends AppCompatActivity {
 
                 btn_kerjakan.setText("Tinjau Jawaban");
 
+                btn_kerjakan.setOnClickListener(v -> {
+                    Intent intent = new Intent(this, TinjauJawabanActivity.class);
+                    intent.putExtra("data_kuis", kuis);
+                    startActivity(intent);
+                });
+
                 btn_edit.setOnClickListener(v -> {
-                    Intent intent = new Intent(this, BuatFragment.class);
+                    Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("data_kuis", kuis);
                     startActivity(intent);
                 });

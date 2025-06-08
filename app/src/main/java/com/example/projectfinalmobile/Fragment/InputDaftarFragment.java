@@ -28,6 +28,8 @@ public class InputDaftarFragment extends Fragment {
     private LinearLayout containerPertanyaan;
     private LayoutInflater inflater;
     private Button simpan;
+    private KuisModel kuisLama = null;
+
 
     private final List<Integer> listJawabanBenar = new ArrayList<>();
 
@@ -44,13 +46,22 @@ public class InputDaftarFragment extends Fragment {
         simpan = view.findViewById(R.id.simpan);
 
         tambahPertanyaan();
-
         tombolTambah.setOnClickListener(v -> tambahPertanyaan());
+
+        Bundle args = getArguments();
+        if (args != null && args.containsKey("data_kuis")) {
+            kuisLama = args.getParcelable("data_kuis");
+            if (kuisLama != null && kuisLama.getQuestions() != null) {
+                isiPertanyaanDariData(kuisLama);
+                simpan.setText("Perbarui");
+            }
+        }
 
         simpan.setOnClickListener(v -> simpanKeDatabase());
 
         return view;
     }
+
 
     private void tambahPertanyaan() {
         View card = inflater.inflate(R.layout.card_pertanyaan, containerPertanyaan, false);
@@ -87,22 +98,14 @@ public class InputDaftarFragment extends Fragment {
             return;
         }
 
-        String judul = args.getString("judul");
-        String kategori = args.getString("kategori");
-        String tipe = args.getString("tipe");
-        String tingkatKesulitan = args.getString("tingkat_kesulitan");
-        String imgUrl = args.getString("img_url");
-
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         int userId = sharedPreferences.getInt("user_id", -1);
-
         if (userId == -1) {
             Toast.makeText(getContext(), "User ID tidak ditemukan", Toast.LENGTH_SHORT).show();
             return;
         }
 
         List<PertanyaanModel> pertanyaanList = getDaftarPertanyaanLengkap();
-
         if (pertanyaanList.isEmpty()) {
             Toast.makeText(getContext(), "Minimal ada satu pertanyaan", Toast.LENGTH_SHORT).show();
             return;
@@ -124,48 +127,65 @@ public class InputDaftarFragment extends Fragment {
                 }
             }
 
-            if (tipe.equalsIgnoreCase("pilihan ganda")) {
-                if (jumlahOpsiValid != 4) {
-                    Toast.makeText(getContext(), "Pertanyaan ke-" + (i + 1) + " harus memiliki 4 opsi jawaban untuk tipe 'pilihan ganda'", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } else if (tipe.equalsIgnoreCase("boolean")) {
-                if (jumlahOpsiValid != 2) {
-                    Toast.makeText(getContext(), "Pertanyaan ke-" + (i + 1) + " harus memiliki 2 opsi jawaban untuk tipe 'boolean'", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } else {
-                Toast.makeText(getContext(), "Tipe kuis tidak dikenali: " + tipe, Toast.LENGTH_SHORT).show();
+            String tipe = kuisLama != null ? kuisLama.getType() : args.getString("tipe");
+
+            if (tipe.equalsIgnoreCase("pilihan ganda") && jumlahOpsiValid != 4) {
+                Toast.makeText(getContext(), "Pertanyaan ke-" + (i + 1) + " harus punya 4 opsi", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (tipe.equalsIgnoreCase("boolean") && jumlahOpsiValid != 2) {
+                Toast.makeText(getContext(), "Pertanyaan ke-" + (i + 1) + " harus punya 2 opsi", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-
             if (p.getAnswer() == null || p.getAnswer().isEmpty()) {
-                Toast.makeText(getContext(), "Jawaban benar untuk pertanyaan ke-" + (i + 1) + " belum dipilih", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Jawaban benar belum dipilih untuk pertanyaan ke-" + (i + 1), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
-
-        KuisModel kuis = new KuisModel();
-        kuis.setTitle(judul);
-        kuis.setCategory(kategori);
-        kuis.setType(tipe);
-        kuis.setDifficulty(tingkatKesulitan);
-        kuis.setId_image(imgUrl);
-        kuis.setUserId(String.valueOf(userId));
-        kuis.setQuestions(pertanyaanList);
 
         KuisHelper dbHelper = new KuisHelper(getContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long result = dbHelper.insertKuisLengkap(kuis, db);
+        int kuis_id = dbHelper.getIdByTitle(kuisLama.getTitle());
 
-        if (result != -1) {
-            Toast.makeText(getContext(), "Kuis berhasil disimpan. ID = " + result, Toast.LENGTH_SHORT).show();
-            clearInput();
+        if (kuisLama != null && kuis_id > 0) {
+            // ======= MODE UPDATE =======
+            kuisLama.setQuestions(pertanyaanList);
+            kuisLama.setId(kuis_id);
+            kuisLama.setUserId(String.valueOf(userId));
+            boolean updated = dbHelper.updateKuisLengkap(kuisLama, db);
+            if (updated) {
+                Toast.makeText(getContext(), "Kuis berhasil diperbarui", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Gagal memperbarui kuis", Toast.LENGTH_SHORT).show();
+            }
+
         } else {
-            Toast.makeText(getContext(), "Gagal menyimpan kuis", Toast.LENGTH_SHORT).show();
+            // ======= MODE BUAT BARU =======
+            String judul = args.getString("judul");
+            String kategori = args.getString("kategori");
+            String tipe = args.getString("tipe");
+            String tingkatKesulitan = args.getString("tingkat_kesulitan");
+            String imgUrl = args.getString("img_url");
+
+            KuisModel kuis = new KuisModel();
+            kuis.setTitle(judul);
+            kuis.setCategory(kategori);
+            kuis.setType(tipe);
+            kuis.setDifficulty(tingkatKesulitan);
+            kuis.setId_image(imgUrl);
+            kuis.setUserId(String.valueOf(userId));
+            kuis.setQuestions(pertanyaanList);
+
+            long result = dbHelper.insertKuisLengkap(kuis, db);
+            if (result != -1) {
+                Toast.makeText(getContext(), "Kuis berhasil disimpan", Toast.LENGTH_SHORT).show();
+                clearInput();
+            } else {
+                Toast.makeText(getContext(), "Gagal menyimpan kuis", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
 
 
 
@@ -208,6 +228,74 @@ public class InputDaftarFragment extends Fragment {
         listJawabanBenar.clear();
         tambahPertanyaan(); // Tambahkan satu pertanyaan awal kembali
     }
+
+    private void isiPertanyaanDariData(KuisModel kuis) {
+        containerPertanyaan.removeAllViews();
+        listJawabanBenar.clear();
+
+        List<PertanyaanModel> daftarPertanyaan = kuis.getQuestions();
+        if (daftarPertanyaan == null) return;
+
+        for (PertanyaanModel p : daftarPertanyaan) {
+            View card = inflater.inflate(R.layout.card_pertanyaan, containerPertanyaan, false);
+
+            EditText etPertanyaan = card.findViewById(R.id.pertanyaan);
+            EditText[] opsi = {
+                    card.findViewById(R.id.opsi1),
+                    card.findViewById(R.id.opsi2),
+                    card.findViewById(R.id.opsi3),
+                    card.findViewById(R.id.opsi4)
+            };
+
+            ImageView[] acceptIcons = {
+                    card.findViewById(R.id.accept_opsi1),
+                    card.findViewById(R.id.accept_opsi2),
+                    card.findViewById(R.id.accept_opsi3),
+                    card.findViewById(R.id.accept_opsi4)
+            };
+
+            etPertanyaan.setText(p.getQuestion());
+            List<String> opsiList = p.getOptions();
+
+            for (int i = 0; i < opsi.length; i++) {
+                if (i < opsiList.size()) {
+                    opsi[i].setText(opsiList.get(i));
+                }
+            }
+
+            int indexJawaban = -1;
+            for (int i = 0; i < opsiList.size(); i++) {
+                if (opsiList.get(i).equals(p.getAnswer())) {
+                    indexJawaban = i;
+                    break;
+                }
+            }
+
+            listJawabanBenar.add(indexJawaban);
+            int currentIndex = listJawabanBenar.size() - 1;
+
+            for (int i = 0; i < acceptIcons.length; i++) {
+                final int idx = i;
+                acceptIcons[i].setOnClickListener(v -> {
+                    for (int j = 0; j < acceptIcons.length; j++) {
+                        acceptIcons[j].setImageResource(R.drawable.check);
+                    }
+                    acceptIcons[idx].setImageResource(R.drawable.accept);
+                    listJawabanBenar.set(currentIndex, idx);
+                });
+
+                // Jika jawaban saat ini benar, tampilkan tanda centang
+                if (i == indexJawaban) {
+                    acceptIcons[i].setImageResource(R.drawable.accept);
+                } else {
+                    acceptIcons[i].setImageResource(R.drawable.check);
+                }
+            }
+
+            containerPertanyaan.addView(card);
+        }
+    }
+
 
 
 }

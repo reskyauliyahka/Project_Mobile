@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ffffff"
     tools:context=".Activity.LoginActivity"
     android:orientation="vertical">
 
@@ -57,23 +56,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="#ffffff"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
             >
+
             <EditText
                 android:id="@+id/usernameEmail"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="51dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_unklik"
-                android:padding="10dp"
-                android:hint="username atau email"
                 android:fontFamily="@font/nexaheavy"
-                android:textSize="16sp"
-                android:textColorHint="@color/hide"
+                android:hint="username atau email"
+                android:padding="10dp"
                 android:textColor="@color/hide"
-                />
+                android:textColorHint="@color/hide"
+                android:textSize="16sp" />
+
             <LinearLayout
                 android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
@@ -102,11 +102,11 @@
 
                 <ImageView
                     android:id="@+id/hide"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/hide"
                     android:layout_gravity="center"
-                    android:tint="@color/text"
+                    android:tint="@color/utama"
                     android:contentDescription="Toggle Password Visibility"
                     />
 

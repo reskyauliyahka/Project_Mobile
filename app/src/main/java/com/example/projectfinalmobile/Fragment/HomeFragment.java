@@ -121,12 +121,17 @@ public class HomeFragment extends Fragment {
                             ? allKuis.subList(0, 2)
                             : allKuis;
 
-                    kuisAdapter = new KuisAdapter(getContext(), limitedKuis);
-                    recyclerKuis.setAdapter(kuisAdapter);
+                    Context context = getContext();
+                    if (context != null) {
+                        KuisAdapter adapter = new KuisAdapter(context, limitedKuis);
+                        recyclerKuis.setAdapter(adapter);
+                        recyclerKuis.setVisibility(View.VISIBLE);
+                        icLoading.setVisibility(View.GONE);
+                        gagalMemuat.setVisibility(View.GONE);
+                    }
 
-                    recyclerKuis.setVisibility(View.VISIBLE);
-                    icLoading.setVisibility(View.GONE);
-                    gagalMemuat.setVisibility(View.GONE);
+
+
                 } else {
                     gagalMemuat.setVisibility(View.VISIBLE);
                 }

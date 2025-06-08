@@ -31,68 +31,6 @@ public class KuisHelper {
         dbHelper.close();
     }
 
-    public boolean isKuisDuplicate(KuisModel kuis, SQLiteDatabase db) {
-        StringBuilder queryBuilder = new StringBuilder();
-        List<String> args = new ArrayList<>();
-
-        queryBuilder.append("SELECT 1 FROM ")
-                .append(DatabaseContract.Kuis.TABLE_NAME)
-                .append(" WHERE ");
-
-        List<String> conditions = new ArrayList<>();
-
-        if (kuis.getTitle() != null) {
-            conditions.add(DatabaseContract.Kuis.JUDUL + " = ?");
-            args.add(kuis.getTitle());
-        } else {
-            conditions.add(DatabaseContract.Kuis.JUDUL + " IS NULL");
-        }
-
-        if (kuis.getCategory() != null) {
-            conditions.add(DatabaseContract.Kuis.KATEGORI + " = ?");
-            args.add(kuis.getCategory());
-        } else {
-            conditions.add(DatabaseContract.Kuis.KATEGORI + " IS NULL");
-        }
-
-        if (kuis.getType() != null) {
-            conditions.add(DatabaseContract.Kuis.TIPE + " = ?");
-            args.add(kuis.getType());
-        } else {
-            conditions.add(DatabaseContract.Kuis.TIPE + " IS NULL");
-        }
-
-        if (kuis.getDifficulty() != null) {
-            conditions.add(DatabaseContract.Kuis.TINGKAT_KESULITAN + " = ?");
-            args.add(kuis.getDifficulty());
-        } else {
-            conditions.add(DatabaseContract.Kuis.TINGKAT_KESULITAN + " IS NULL");
-        }
-
-        if (kuis.getId_Image() != null) {
-            conditions.add(DatabaseContract.Kuis.IMG_URL + " = ?");
-            args.add(kuis.getId_Image());
-        } else {
-            conditions.add(DatabaseContract.Kuis.IMG_URL + " IS NULL");
-        }
-
-        if (kuis.getUserId() != null) {
-            conditions.add(DatabaseContract.Kuis.USER_ID + " = ?");
-            args.add(kuis.getUserId());
-        } else {
-            conditions.add(DatabaseContract.Kuis.USER_ID + " IS NULL");
-        }
-
-        queryBuilder.append(TextUtils.join(" AND ", conditions));
-
-        Cursor cursor = db.rawQuery(queryBuilder.toString(), args.toArray(new String[0]));
-
-        boolean exists = cursor != null && cursor.moveToFirst();
-        if (cursor != null) cursor.close();
-        return exists;
-    }
-
-
     public boolean isKuisExist(String judul) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
@@ -460,10 +398,82 @@ public class KuisHelper {
         return success;
     }
 
+    public boolean updateKuisLengkap(KuisModel kuis, SQLiteDatabase db) {
+        db.beginTransaction();
+        boolean success = false;
 
+        try {
+            // 1. Update data kuis
+            ContentValues values = new ContentValues();
+            values.put(DatabaseContract.Kuis.JUDUL, kuis.getTitle());
+            values.put(DatabaseContract.Kuis.TIPE, kuis.getType());
+            values.put(DatabaseContract.Kuis.KATEGORI, kuis.getCategory());
+            values.put(DatabaseContract.Kuis.TINGKAT_KESULITAN, kuis.getDifficulty());
+            values.put(DatabaseContract.Kuis.IMG_URL, kuis.getId_Image());
+            values.put(DatabaseContract.Kuis.USER_ID, kuis.getUserId());
 
+            int rowsUpdated = db.update(DatabaseContract.Kuis.TABLE_NAME,
+                    values,
+                    DatabaseContract.Kuis._ID + " = ?",
+                    new String[]{String.valueOf(kuis.getId())});
 
+            if (rowsUpdated <= 0) return false;
 
+            // 2. Hapus semua pertanyaan lama dan opsi jawaban terkait
+            Cursor cursorPertanyaan = db.query(
+                    DatabaseContract.Pertanyaan.TABLE_NAME,
+                    new String[]{DatabaseContract.Pertanyaan._ID},
+                    DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
+                    new String[]{String.valueOf(kuis.getId())},
+                    null, null, null
+            );
+
+            if (cursorPertanyaan != null) {
+                while (cursorPertanyaan.moveToNext()) {
+                    int pertanyaanId = cursorPertanyaan.getInt(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan._ID));
+
+                    db.delete(DatabaseContract.OpsiJawaban.TABLE_NAME,
+                            DatabaseContract.OpsiJawaban.PERTANYAAN_ID + " = ?",
+                            new String[]{String.valueOf(pertanyaanId)});
+                }
+                cursorPertanyaan.close();
+            }
+
+            db.delete(DatabaseContract.Pertanyaan.TABLE_NAME,
+                    DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
+                    new String[]{String.valueOf(kuis.getId())});
+
+            // 3. Tambahkan pertanyaan dan opsi baru
+            if (kuis.getQuestions() != null) {
+                for (PertanyaanModel pertanyaan : kuis.getQuestions()) {
+                    ContentValues pertanyaanValues = new ContentValues();
+                    pertanyaanValues.put(DatabaseContract.Pertanyaan.KUIS_ID, kuis.getId());
+                    pertanyaanValues.put(DatabaseContract.Pertanyaan.PERTANYAAN, pertanyaan.getQuestion());
+                    pertanyaanValues.put(DatabaseContract.Pertanyaan.JAWABAN, pertanyaan.getAnswer());
+
+                    long pertanyaanId = db.insert(DatabaseContract.Pertanyaan.TABLE_NAME, null, pertanyaanValues);
+
+                    if (pertanyaanId != -1 && pertanyaan.getOptions() != null) {
+                        for (String opsi : pertanyaan.getOptions()) {
+                            ContentValues opsiValues = new ContentValues();
+                            opsiValues.put(DatabaseContract.OpsiJawaban.PERTANYAAN_ID, pertanyaanId);
+                            opsiValues.put(DatabaseContract.OpsiJawaban.TEKS, opsi);
+                            db.insert(DatabaseContract.OpsiJawaban.TABLE_NAME, null, opsiValues);
+                        }
+                    }
+                }
+            }
+
+            db.setTransactionSuccessful();
+            success = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+
+        return success;
+    }
     public SQLiteDatabase getWritableDatabase() {
         return dbHelper.getWritableDatabase();
     }

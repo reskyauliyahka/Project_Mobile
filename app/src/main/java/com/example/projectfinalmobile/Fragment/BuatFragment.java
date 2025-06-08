@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.projectfinalmobile.Model.KuisModel;
 import com.example.projectfinalmobile.R;
 
 public class BuatFragment extends Fragment implements InputDetailFragment.OnNextClickListener {
@@ -29,7 +30,15 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
         btnDetail = view.findViewById(R.id.btn_detail);
         btnDaftar = view.findViewById(R.id.btn_daftar);
 
-        replaceFragment(new InputDetailFragment());
+        Bundle args = getArguments();
+        InputDetailFragment inputDetailFragment = new InputDetailFragment();
+
+        if (args != null && args.containsKey("data_kuis")) {
+            // Teruskan argumen ke InputDetailFragment
+            inputDetailFragment.setArguments(args);
+        }
+
+        replaceFragment(inputDetailFragment);
 
         btnDetail.setOnClickListener(v -> {
             replaceFragment(new InputDetailFragment());
@@ -55,15 +64,17 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
     }
 
     @Override
-    public void onNextClicked(String judul, String kategori, String tipe, String tingkatKesulitan, Uri imgUri) {
+    public void onNextClicked(KuisModel dataKuis, String judul, String kategori, String tipe, String tingkatKesulitan, Uri imgUri) {
         InputDaftarFragment daftarFragment = new InputDaftarFragment();
 
         Bundle bundle = new Bundle();
+        bundle.putParcelable("data_kuis", dataKuis); // kirim seluruh model
         bundle.putString("judul", judul);
         bundle.putString("kategori", kategori);
         bundle.putString("tipe", tipe);
         bundle.putString("tingkat_kesulitan", tingkatKesulitan);
         bundle.putString("img_url", imgUri != null ? imgUri.toString() : null);
+
         daftarFragment.setArguments(bundle);
 
         replaceFragment(daftarFragment);
@@ -71,4 +82,5 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
         btnDaftar.setBackgroundResource(R.drawable.rounded_klik);
         btnDetail.setBackgroundResource(R.drawable.rounded_unklik);
     }
+
 }

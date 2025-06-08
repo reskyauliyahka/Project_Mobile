@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.Users.USERNAME + " TEXT, " +
                 DatabaseContract.Users.EMAIL + " TEXT, " +
                 DatabaseContract.Users.PASSWORD + " TEXT, " +
+                DatabaseContract.Users.PROFILE_PICTURE + " TEXT, " +
                 DatabaseContract.Users.CREATED_AT + " TEXT, " +
                 DatabaseContract.Users.UPDATED_AT + " TEXT)";
 

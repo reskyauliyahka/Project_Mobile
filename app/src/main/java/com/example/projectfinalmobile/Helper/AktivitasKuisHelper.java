@@ -12,7 +12,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AktivitasKuisHelper {
     private DatabaseHelper dbHelper;
@@ -109,6 +111,102 @@ public class AktivitasKuisHelper {
 
         return jawabanUser;
     }
+
+
+    public double getRataRataSkorByUserId(int userId) {
+        double rataRata = 0;
+        int totalSkor = 0;
+        int jumlah = 0;
+
+        Cursor cursor = database.query(
+                DatabaseContract.AktivitasKuis.TABLE_NAME,
+                new String[]{DatabaseContract.AktivitasKuis.SKOR},
+                DatabaseContract.AktivitasKuis.USER_ID + "=?",
+                new String[]{String.valueOf(userId)},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int skor = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseContract.AktivitasKuis.SKOR));
+                totalSkor += skor;
+                jumlah++;
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        if (jumlah > 0) {
+            rataRata = (double) totalSkor / jumlah;
+        }
+
+        return rataRata;
+    }
+
+    public Map<Integer, Map<String, Integer>> getStatistikJawabanByKuisId(int kuisId) {
+        Map<Integer, Map<String, Integer>> statistik = new HashMap<>();
+
+        Cursor cursor = database.query(
+                DatabaseContract.AktivitasKuis.TABLE_NAME,
+                new String[]{DatabaseContract.AktivitasKuis.LIST_JAWABAN_USER},
+                DatabaseContract.AktivitasKuis.KUIS_ID + "=?",
+                new String[]{String.valueOf(kuisId)},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<String>>(){}.getType();
+
+            do {
+                String jsonJawaban = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.AktivitasKuis.LIST_JAWABAN_USER));
+                List<String> jawabanUser = gson.fromJson(jsonJawaban, type);
+
+                for (int i = 0; i < jawabanUser.size(); i++) {
+                    String jawaban = jawabanUser.get(i);
+
+                    Map<String, Integer> jawabanMap = statistik.getOrDefault(i, new HashMap<>());
+                    int count = jawabanMap.getOrDefault(jawaban, 0);
+                    jawabanMap.put(jawaban, count + 1);
+                    statistik.put(i, jawabanMap);
+                }
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return statistik; // key = indeks soal, value = map jawaban A/B/C/D -> jumlah user
+    }
+
+    public List<Map<String, String>> getUserInfoAndScoreByKuisId(int kuisId) {
+        List<Map<String, String>> userList = new ArrayList<>();
+
+        String query = "SELECT u.id, u.username, u.foto_profil, ak.skor " +
+                "FROM " + DatabaseContract.AktivitasKuis.TABLE_NAME + " ak " +
+                "JOIN " + DatabaseContract.Users.TABLE_NAME + " u " +
+                "ON ak." + DatabaseContract.AktivitasKuis.USER_ID + " = u." + DatabaseContract.Users._ID + " " +
+                "WHERE ak." + DatabaseContract.AktivitasKuis.KUIS_ID + " = ?";
+
+        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(kuisId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Map<String, String> user = new HashMap<>();
+                user.put("id", String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("id"))));
+                user.put("username", cursor.getString(cursor.getColumnIndexOrThrow("username")));
+                user.put("foto_profil", cursor.getString(cursor.getColumnIndexOrThrow("foto_profil")));
+                user.put("skor", String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("skor"))));
+
+                userList.add(user);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return userList;
+    }
+
+
+
 
 
 
