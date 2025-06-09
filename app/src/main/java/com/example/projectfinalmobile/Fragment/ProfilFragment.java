@@ -16,8 +16,11 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +36,17 @@ import com.example.projectfinalmobile.Helper.AktivitasKuisHelper;
 import com.example.projectfinalmobile.Helper.UserHelper;
 import com.example.projectfinalmobile.R;
 import com.example.projectfinalmobile.ThemeHelper;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ProfilFragment extends Fragment {
@@ -110,16 +119,51 @@ public class ProfilFragment extends Fragment {
 
         btn_editProfil.setOnClickListener(v -> showEditDialog());
 
-        rataSkor = view.findViewById(R.id.rataSkor);
+
+        LineChart chartSkor = view.findViewById(R.id.chartSkor);
 
         AktivitasKuisHelper aktivitasKuisHelper = new AktivitasKuisHelper(getContext());
         aktivitasKuisHelper.open();
-        double rataRata = aktivitasKuisHelper.getRataRataSkorByUserId(userId);
-        if (rataRata == 0) {
-            rataSkor.setText("-");
+
+        List<Integer> historiSkor = aktivitasKuisHelper.getHistoriSkorByUserId(userId);
+
+        if (historiSkor.isEmpty()) {
+            chartSkor.setVisibility(View.GONE);
         } else {
-            rataSkor.setText(String.format(Locale.getDefault(), "%.2f", rataRata));
+            chartSkor.setVisibility(View.VISIBLE);
+
+            List<Entry> entries = new ArrayList<>();
+            for (int i = 0; i < historiSkor.size(); i++) {
+                entries.add(new Entry(i + 1, historiSkor.get(i)));
+            }
+
+            Context context = requireContext();
+
+
+            LineDataSet dataSet = new LineDataSet(entries, "Histori Skor");
+            dataSet.setColor(ContextCompat.getColor(context, R.color.utama));
+            dataSet.setValueTextColor(ContextCompat.getColor(context, R.color.black));
+            dataSet.setCircleColor(ContextCompat.getColor(context, R.color.bg_susah));
+            dataSet.setLineWidth(2f);
+            dataSet.setCircleRadius(3f);
+
+            LineData lineData = new LineData(dataSet);
+            chartSkor.setData(lineData);
+            chartSkor.getDescription().setText("Grafik Skor Kuis");
+            chartSkor.animateY(1000);
+            chartSkor.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.black));
+            chartSkor.getAxisLeft().setTextSize(12f);
+            chartSkor.getXAxis().setTextColor(ContextCompat.getColor(context, R.color.black));
+            chartSkor.getAxisRight().setEnabled(false);
+            chartSkor.invalidate();
         }
+
+
+
+        rataSkor = view.findViewById(R.id.rataSkor);
+        double rataRata = aktivitasKuisHelper.getRataRataSkorByUserId(userId);
+        rataSkor.setText(String.format(Locale.getDefault(), "%.2f", rataRata));
+
         aktivitasKuisHelper.close();
 
 
@@ -127,7 +171,10 @@ public class ProfilFragment extends Fragment {
     }
 
     private void showEditDialog() {
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.edit_profil, null);
+        Context context = requireContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        View dialogView = inflater.inflate(R.layout.edit_profil, null);
 
         EditText etUsername = dialogView.findViewById(R.id.username);
         EditText etEmail = dialogView.findViewById(R.id.email);
@@ -136,8 +183,9 @@ public class ProfilFragment extends Fragment {
 
         etUsername.setText(username.getText().toString());
         etEmail.setText(email.getText().toString());
-        imgProfile.setImageDrawable(imageProfileMain.getDrawable());
-
+        if (imageProfileMain.getDrawable() != null) {
+            imgProfile.setImageDrawable(imageProfileMain.getDrawable());
+        }
 
         imgProfile.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -146,21 +194,10 @@ public class ProfilFragment extends Fragment {
             imgProfilInDialog = imgProfile;
         });
 
-
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setCancelable(true)
                 .create();
-
-        dialog.setOnShowListener(d -> {
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setLayout(
-                        (int) (getResources().getDisplayMetrics().widthPixels * 0.6), // Misalnya 80% lebar layar
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            }
-        });
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         final int userId = sharedPreferences.getInt("user_id", -1);
@@ -170,12 +207,12 @@ public class ProfilFragment extends Fragment {
             String newEmail = etEmail.getText().toString().trim();
 
             if (newUsername.isEmpty() || newEmail.isEmpty()) {
-                Toast.makeText(getContext(), "Username dan Email tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Username dan Email tidak boleh kosong", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (userId == -1) {
-                Toast.makeText(getContext(), "User ID tidak valid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "User ID tidak valid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -186,7 +223,7 @@ public class ProfilFragment extends Fragment {
                 values.put("profile_picture", savedImagePath);
             }
 
-            UserHelper userHelper = new UserHelper(requireContext());
+            UserHelper userHelper = new UserHelper(context);
             userHelper.open();
             int rowsUpdated = userHelper.update(userId, values);
             userHelper.close();
@@ -197,15 +234,16 @@ public class ProfilFragment extends Fragment {
                 if (savedImagePath != null) {
                     imageProfileMain.setImageURI(Uri.fromFile(new File(savedImagePath)));
                 }
-                Toast.makeText(getContext(), "Profil berhasil diperbarui", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Profil berhasil diperbarui", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                Toast.makeText(getContext(), "Gagal memperbarui profil", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Gagal memperbarui profil", Toast.LENGTH_SHORT).show();
             }
         });
 
         dialog.show();
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

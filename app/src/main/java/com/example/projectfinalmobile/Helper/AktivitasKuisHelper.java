@@ -206,11 +206,30 @@ public class AktivitasKuisHelper {
         return result;
     }
 
+    public List<Integer> getHistoriSkorByUserId(int userId) {
+        List<Integer> skorList = new ArrayList<>();
 
+        Cursor cursor = database.rawQuery(
+                "SELECT " + DatabaseContract.AktivitasKuis.SKOR +
+                        " FROM " + DatabaseContract.AktivitasKuis.TABLE_NAME +
+                        " WHERE " + DatabaseContract.AktivitasKuis.USER_ID + " = ?" +
+                        " ORDER BY " + DatabaseContract.AktivitasKuis.TANGGAL + " DESC LIMIT 10",
+                new String[]{String.valueOf(userId)}
+        );
 
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int skor = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseContract.AktivitasKuis.SKOR));
+                skorList.add(skor);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
 
+        // Balikkan urutan agar grafik tampil dari yang lama ke yang terbaru
+        java.util.Collections.reverse(skorList);
 
-
+        return skorList;
+    }
 
 }
 

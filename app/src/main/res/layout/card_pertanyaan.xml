@@ -127,6 +127,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tekspilihan3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nexaheavy"
@@ -164,6 +165,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tekspilihan4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nexaheavy"

@@ -9,6 +9,7 @@ import com.example.projectfinalmobile.Model.KuisModel;
 import com.example.projectfinalmobile.R;
 
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,5 +40,8 @@ public class ScoreActivity extends AppCompatActivity {
 //            intent.putStringArrayListExtra("jawaban_user", new ArrayList<>(jawabanUser));
             startActivity(intent);
         });
+
+        ImageView btn_kembali = findViewById(R.id.btn_kembali);
+        btn_kembali.setOnClickListener(v -> finish());
     }
 }

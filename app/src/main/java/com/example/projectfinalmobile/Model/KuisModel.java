@@ -16,6 +16,7 @@ public class KuisModel implements Parcelable {
     private String category;
     private String type;
     private String difficulty;
+    private String status;
     private List<PertanyaanModel> questions;
 
     private List<String> jawabanUser;
@@ -27,6 +28,10 @@ public class KuisModel implements Parcelable {
     public void setJawabanUser(List<String> jawabanUser) {
         this.jawabanUser = jawabanUser;
     }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
 
 
     private String userId;

@@ -126,7 +126,10 @@ public class FavoriteFragment extends Fragment {
         recyclerKuis.setVisibility(View.GONE);
 
         new android.os.Handler().postDelayed(() -> {
-            SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+            Context context = getContext();
+            if (context == null || !isAdded()) return;  // Cegah crash jika fragment sudah detached
+
+            SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             int userId = sharedPreferences.getInt("user_id", -1);
             if (userId == -1) return;
 
@@ -153,6 +156,8 @@ public class FavoriteFragment extends Fragment {
                 cursor.close();
             }
 
+            if (!isAdded()) return; // Cek ulang sebelum manipulasi UI
+
             icLoading.setVisibility(View.GONE);
 
             if (kuisFavoritList.isEmpty()) {
@@ -166,6 +171,7 @@ public class FavoriteFragment extends Fragment {
 
         }, 1000);
     }
+
 
     private void refreshData() {
         loadFavoritWithFilter();

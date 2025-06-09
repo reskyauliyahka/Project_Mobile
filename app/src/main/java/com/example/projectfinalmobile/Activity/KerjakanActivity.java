@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -126,6 +127,8 @@ public class KerjakanActivity extends AppCompatActivity {
         View cardView = inflater.inflate(R.layout.card_pertanyaan, containerPertanyaan, false);
 
         PertanyaanModel soal = pertanyaanList.get(index);
+        TextView teks_opsi3 = cardView.findViewById(R.id.tekspilihan3);
+        TextView teks_opsi4 = cardView.findViewById(R.id.tekspilihan4);
 
         EditText edtPertanyaan = cardView.findViewById(R.id.pertanyaan);
         edtPertanyaan.setEnabled(false);
@@ -146,11 +149,27 @@ public class KerjakanActivity extends AppCompatActivity {
         edtPertanyaan.setText(soal.getQuestion());
         List<String> opsi = soal.getOptions();
 
-        if (opsi != null && opsi.size() >= 4) {
-            opsi1.setText(opsi.get(0));
-            opsi2.setText(opsi.get(1));
-            opsi3.setText(opsi.get(2));
-            opsi4.setText(opsi.get(3));
+        if (opsi != null) {
+            if (opsi.size() > 2) {
+                if (opsi.get(2).isEmpty() && opsi.get(3).isEmpty()) {
+                    opsi1.setText(opsi.get(0));
+                    opsi2.setText(opsi.get(1));
+                    opsi3.setVisibility(View.GONE);
+                    opsi4.setVisibility(View.GONE);
+                    check3.setVisibility(View.GONE);
+                    check4.setVisibility(View.GONE);
+                    teks_opsi3.setVisibility(View.GONE);
+                    teks_opsi4.setVisibility(View.GONE);
+                } else {
+                    opsi1.setText(opsi.get(0));
+                    opsi2.setText(opsi.get(1));
+                    opsi3.setText(opsi.get(2));
+                    opsi4.setText(opsi.get(3));
+                    opsi3.setVisibility(View.VISIBLE);
+                    opsi4.setVisibility(View.VISIBLE);
+
+                }
+            }
         }
 
         jawabanDipilih = null;

@@ -22,6 +22,7 @@ public class DatabaseContract {
         public static final String TIPE = "tipe";
         public static final String TINGKAT_KESULITAN = "tingkat_kesulitan";
         public static final String IMG_URL = "img_url";
+        public static final String STATUS = "status";
         public static final String CREATED_AT = "created_at";
         public static final String UPDATED_AT = "updated_at";
     }

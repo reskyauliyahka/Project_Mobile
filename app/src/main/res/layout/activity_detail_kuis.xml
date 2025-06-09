@@ -65,8 +65,8 @@
                 android:visibility="gone"
                 />
             <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
                 android:background="@drawable/rounded_unklik"
                 android:padding="5dp"
                 android:layout_gravity="center"
@@ -218,7 +218,7 @@
                 android:id="@+id/text_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Score"
+                android:text="Skor"
                 android:textSize="14sp"
                 android:visibility="gone"
                 android:textColor="@color/text"
@@ -230,10 +230,10 @@
                 android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Score"
+                android:text="Skor"
                 android:visibility="gone"
                 android:textSize="18sp"
-                android:textColor="@color/utama"
+                android:textColor="@color/text"
                 android:fontFamily="@font/nexaheavy"
                 android:gravity="center"
                 />
@@ -253,6 +253,7 @@
         android:orientation="horizontal"
         android:layout_margin="20dp"
         >
+
         <Button
             android:id="@+id/btn_hapus"
             android:layout_marginStart="10dp"
@@ -265,7 +266,7 @@
             android:fontFamily="@font/nexaheavy"
             android:textSize="14sp"
             android:textAllCaps="false"
-            android:visibility="gone"
+
             />
         <Button
             android:id="@+id/btn_kerjakan"

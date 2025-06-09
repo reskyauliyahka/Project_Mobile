@@ -115,7 +115,7 @@
                 android:layout_height="20dp"
                 android:src="@drawable/bookmark_kosong"
                 android:layout_gravity="end"
-                android:tint="@color/black"
+                android:tint="@color/utama"
                 />
         </LinearLayout>
 

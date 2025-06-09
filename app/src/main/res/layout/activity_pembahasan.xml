@@ -81,55 +81,5 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_unklik"
-            android:padding="10dp"
-            android:orientation="vertical"
-            >
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Komentar"
-                android:textColor="@color/utama"
-                android:textSize="16sp"
-                android:fontFamily="@font/nexaheavy"
-                />
-
-            <TextView
-                android:layout_marginStart="10dp"
-                android:layout_marginVertical="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="sjahsjjjjjjjjjjsahaksjkjkswddd"
-                android:textSize="14sp"
-                android:textColor="@color/utama"
-                />
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_marginTop="20dp">
-
-            <Button
-                android:id="@+id/batal"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="40dp"
-                android:background="@drawable/rounded_klik"
-                android:text="Tambah Review"
-                android:fontFamily="@font/nexaheavy"
-                android:textAllCaps="false"
-                android:textColor="@color/utama" />
-
-
-        </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

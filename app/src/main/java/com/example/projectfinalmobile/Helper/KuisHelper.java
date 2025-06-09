@@ -474,6 +474,40 @@ public class KuisHelper {
 
         return success;
     }
+
+    public boolean updateStatusKuis(int kuisId, String statusBaru) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Kuis.STATUS, statusBaru);
+        values.put(DatabaseContract.Kuis.UPDATED_AT, String.valueOf(System.currentTimeMillis())); // opsional
+
+        int rowsUpdated = database.update(
+                DatabaseContract.Kuis.TABLE_NAME,
+                values,
+                DatabaseContract.Kuis._ID + "=?",
+                new String[]{String.valueOf(kuisId)}
+        );
+
+        return rowsUpdated > 0;
+    }
+
+    public String getStatusById(int kuisId) {
+        Cursor cursor = database.query(
+                DatabaseContract.Kuis.TABLE_NAME,
+                new String[]{DatabaseContract.Kuis.STATUS},
+                DatabaseContract.Kuis._ID + "=?",
+                new String[]{String.valueOf(kuisId)},
+                null, null, null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            String status = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.STATUS));
+            cursor.close();
+            return status;
+        }
+        return "buka";
+    }
+
+
     public SQLiteDatabase getWritableDatabase() {
         return dbHelper.getWritableDatabase();
     }

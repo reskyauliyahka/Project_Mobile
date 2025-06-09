@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectfinalmobile.Activity.DetailKuisActivity;
+import com.example.projectfinalmobile.Activity.TinjauJawabanActivity;
 import com.example.projectfinalmobile.Helper.FavoritHelper;
 import com.example.projectfinalmobile.Helper.KuisHelper;
 import com.example.projectfinalmobile.Model.KuisModel;
@@ -115,52 +116,99 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
 
 
         int kuisId = kuisHelper.getIdByTitle(kuis.getTitle());
-        boolean isFavorit = favoritHelper.isFavorit(userId, kuisId);
+        String status = kuisHelper.getStatusById(kuisId);
+        kuis.setStatus(status);
+        boolean isOwnedByUser = false;
 
-        holder.btn_favorit.setImageResource(isFavorit ? R.drawable.bookmark : R.drawable.bookmark_kosong);
-
-        holder.btn_favorit.setOnClickListener(v -> {
-            if (userId == -1) {
-                Toast.makeText(context, "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show();
-                return;
+        List<KuisModel> userKuisList = kuisHelper.getKuisByUserId(String.valueOf(userId));
+        for (KuisModel userKuis : userKuisList) {
+            if (userKuis.getId() == kuisId) {
+                isOwnedByUser = true;
+                break;
             }
+        }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setCancelable(true);
-
-            if (!isFavorit) {
-                builder.setTitle("Tambah ke Favorit");
-                builder.setMessage("Apakah Anda ingin menambahkan ke favorite?");
-                builder.setPositiveButton("Ya", (dialog, which) -> {
-                    favoritHelper.insertFavorit(userId, kuisId);
-                    Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke favorit dengan kuis_id: " + kuisId + " oleh user_id: " + userId);
-                    holder.btn_favorit.setImageResource(R.drawable.bookmark);
-                    Toast.makeText(context, "Berhasil menambahkan ke favorit!", Toast.LENGTH_SHORT).show();
-                });
-            } else {
-                builder.setTitle("Hapus dari Favorit");
-                builder.setMessage("Apakah Anda ingin menghapus dari favorite?");
-                builder.setPositiveButton("Ya", (dialog, which) -> {
-                    favoritHelper.deleteFavorit(userId, kuisId);
-                    holder.btn_favorit.setImageResource(R.drawable.bookmark_kosong);
-                    Toast.makeText(context, "Berhasil menghapus dari favorit", Toast.LENGTH_SHORT).show();
-
-                    if (favoritChangedListener != null) {
-                        favoritChangedListener.onFavoritChanged();
-                    }
-                });
-
-            }
-
-            builder.setNegativeButton("Batal", (dialog, which) -> dialog.dismiss());
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-
-            dialog.getWindow().setBackgroundDrawable(
-                    new ColorDrawable(ContextCompat.getColor(context, R.color.white))
+        if (isOwnedByUser) {
+            holder.btn_favorit.setImageResource(
+                    kuis.getStatus().equalsIgnoreCase("tutup") ? R.drawable.lock : R.drawable.unlock
             );
-        });
+
+            holder.btn_favorit.setOnClickListener(v -> {
+                String pesan = kuis.getStatus().equalsIgnoreCase("tutup") ?
+                        "Apakah Anda ingin membuka kuis ini?" :
+                        "Apakah Anda ingin menutup kuis ini?";
+
+                String statusBaru = kuis.getStatus().equalsIgnoreCase("tutup") ? "buka" : "tutup";
+
+                new AlertDialog.Builder(context)
+                        .setTitle("Ubah Status Kuis")
+                        .setMessage(pesan)
+                        .setPositiveButton("Ya", (dialog, which) -> {
+                            boolean sukses = kuisHelper.updateStatusKuis(kuisId, statusBaru);
+                            if (sukses) {
+                                kuis.setStatus(statusBaru);
+                                Toast.makeText(context, "Status berhasil diperbarui ke " + statusBaru, Toast.LENGTH_SHORT).show();
+                                holder.btn_favorit.setImageResource(
+                                        statusBaru.equals("tutup") ? R.drawable.lock : R.drawable.unlock
+                                );
+                            } else {
+                                Toast.makeText(context, "Gagal memperbarui status", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Batal", null)
+                        .show();
+            });
+
+        } else {
+
+            boolean isFavorit = favoritHelper.isFavorit(userId, kuisId);
+
+            holder.btn_favorit.setImageResource(isFavorit ? R.drawable.bookmark : R.drawable.bookmark_kosong);
+
+            holder.btn_favorit.setOnClickListener(v -> {
+                if (userId == -1) {
+                    Toast.makeText(context, "Silakan login terlebih dahulu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+
+                if (!isFavorit) {
+                    builder.setTitle("Tambah ke Favorit");
+                    builder.setMessage("Apakah Anda ingin menambahkan ke favorite?");
+                    builder.setPositiveButton("Ya", (dialog, which) -> {
+                        favoritHelper.insertFavorit(userId, kuisId);
+                        Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke favorit dengan kuis_id: " + kuisId + " oleh user_id: " + userId);
+                        holder.btn_favorit.setImageResource(R.drawable.bookmark);
+                        Toast.makeText(context, "Berhasil menambahkan ke favorit!", Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    builder.setTitle("Hapus dari Favorit");
+                    builder.setMessage("Apakah Anda ingin menghapus dari favorite?");
+                    builder.setPositiveButton("Ya", (dialog, which) -> {
+                        favoritHelper.deleteFavorit(userId, kuisId);
+                        holder.btn_favorit.setImageResource(R.drawable.bookmark_kosong);
+                        Toast.makeText(context, "Berhasil menghapus dari favorit", Toast.LENGTH_SHORT).show();
+
+                        if (favoritChangedListener != null) {
+                            favoritChangedListener.onFavoritChanged();
+                        }
+                    });
+
+                }
+
+                builder.setNegativeButton("Batal", (dialog, which) -> dialog.dismiss());
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                dialog.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(ContextCompat.getColor(context, R.color.white))
+                );
+            });
+
+        }
 
 
     }

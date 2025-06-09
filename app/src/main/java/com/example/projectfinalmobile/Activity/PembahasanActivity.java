@@ -66,6 +66,8 @@ public class PembahasanActivity extends AppCompatActivity {
         for (int i = 0; i < listSoal.size(); i++) {
             PertanyaanModel soal = listSoal.get(i);
             View cardView = inflater.inflate(R.layout.card_pembahasan, containerPembahasan, false);
+            TextView teks_opsi3 = cardView.findViewById(R.id.tekspilihan3);
+            TextView teks_opsi4 = cardView.findViewById(R.id.tekspilihan4);
 
             EditText edtPertanyaan = cardView.findViewById(R.id.pertanyaan);
             EditText opsi1 = cardView.findViewById(R.id.opsi1);
@@ -93,19 +95,30 @@ public class PembahasanActivity extends AppCompatActivity {
             String jawabanBenar = soal.getAnswer();
             String jawabanUserSekarang = (jawabanUser != null && i < jawabanUser.size()) ? jawabanUser.get(i) : null;
 
-            if (opsi != null && opsi.size() >= 4) {
+            if (opsi != null && opsi.size() >= 2) {
                 opsi1.setText(opsi.get(0));
                 opsi2.setText(opsi.get(1));
+
+                boolean opsi3Kosong = opsi.size() > 2 && opsi.get(2).trim().isEmpty();
+                boolean opsi4Kosong = opsi.size() > 3 && opsi.get(3).trim().isEmpty();
+
+                if (opsi3Kosong && opsi4Kosong) {
+                    opsi3.setVisibility(View.GONE);
+                    opsi4.setVisibility(View.GONE);
+                    check3.setVisibility(View.GONE);
+                    check4.setVisibility(View.GONE);
+                    teks_opsi3.setVisibility(View.GONE);
+                    teks_opsi4.setVisibility(View.GONE);
+                }
+
                 opsi3.setText(opsi.get(2));
                 opsi4.setText(opsi.get(3));
 
-                // Set tanda centang untuk jawaban benar
                 setCheckImage(check1, opsi.get(0), jawabanBenar);
                 setCheckImage(check2, opsi.get(1), jawabanBenar);
-                setCheckImage(check3, opsi.get(2), jawabanBenar);
-                setCheckImage(check4, opsi.get(3), jawabanBenar);
+                if (!opsi3Kosong) setCheckImage(check3, opsi.get(2), jawabanBenar);
+                if (!opsi4Kosong) setCheckImage(check4, opsi.get(3), jawabanBenar);
 
-                // Set background opsi sesuai jawaban user
                 if (jawabanUserSekarang != null) {
                     if (jawabanUserSekarang.equalsIgnoreCase(opsi.get(0))) {
                         opsi1.setBackgroundResource(

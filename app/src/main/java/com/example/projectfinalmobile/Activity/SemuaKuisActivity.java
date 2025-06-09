@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,7 +70,6 @@ public class SemuaKuisActivity extends AppCompatActivity {
         Glide.with(this).asGif().load(R.drawable.loading).into(icLoading);
 
         btnKembali.setOnClickListener(v -> finish());
-
         icLoading.setOnClickListener(v -> loadAllKuisFromAPI());
 
         ArrayAdapter<CharSequence> kategoriAdapter = ArrayAdapter.createFromResource(this, R.array.kategori_kuis, android.R.layout.simple_spinner_item);
@@ -101,16 +99,11 @@ public class SemuaKuisActivity extends AppCompatActivity {
         spinnerTingkat.setOnItemSelectedListener(filterListener);
 
         cariEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filterKuis();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
         loadAllKuisFromAPI();
@@ -119,12 +112,14 @@ public class SemuaKuisActivity extends AppCompatActivity {
     private void loadAllKuisFromAPI() {
         icLoading.setVisibility(View.VISIBLE);
         gagalMemuat.setVisibility(View.GONE);
-        recyclerKuis.setVisibility(View.GONE);
         no_data.setVisibility(View.GONE);
+        recyclerKuis.setVisibility(View.GONE);
 
         if (!isNetworkAvailable()) {
+            icLoading.setVisibility(View.VISIBLE);
             gagalMemuat.setVisibility(View.VISIBLE);
-            icLoading.setVisibility(View.GONE);
+            no_data.setVisibility(View.GONE);
+            allKuisList.clear(); // pastikan kosong
             return;
         }
 
@@ -140,82 +135,87 @@ public class SemuaKuisActivity extends AppCompatActivity {
                     List<KuisModel> localKuisList = loadLocalKuis();
 
                     Set<String> existingKeys = new HashSet<>();
+                    List<KuisModel> combinedList = new ArrayList<>();
 
-                    List<KuisModel> combinedKuisList = new ArrayList<>();
                     for (KuisModel kuis : apiKuisList) {
                         String key = generateKey(kuis);
                         existingKeys.add(key);
-                        combinedKuisList.add(kuis);
+                        combinedList.add(kuis);
                     }
 
                     for (KuisModel kuis : localKuisList) {
                         String key = generateKey(kuis);
                         if (!existingKeys.contains(key)) {
-                            combinedKuisList.add(kuis);
+                            combinedList.add(kuis);
                         }
                     }
 
-                    allKuisList = combinedKuisList;
-
-
+                    allKuisList = combinedList;
                     filterKuis();
                 } else {
                     gagalMemuat.setVisibility(View.VISIBLE);
+                    no_data.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<List<KuisModel>> call, Throwable t) {
-                icLoading.setVisibility(View.VISIBLE);
+                icLoading.setVisibility(View.GONE);
                 gagalMemuat.setVisibility(View.VISIBLE);
+                no_data.setVisibility(View.GONE);
                 recyclerKuis.setVisibility(View.GONE);
+                allKuisList.clear(); // kosongkan agar tidak difilter
             }
         });
     }
 
     private void filterKuis() {
+        if (!isNetworkAvailable() || allKuisList == null || allKuisList.isEmpty()) {
+            recyclerKuis.setVisibility(View.GONE);
+            no_data.setVisibility(View.GONE);
+            return;
+        }
+
         icLoading.setVisibility(View.VISIBLE);
         recyclerKuis.setVisibility(View.GONE);
         no_data.setVisibility(View.GONE);
 
         new android.os.Handler().postDelayed(() -> {
-            String selectedKategori = spinnerKategori.getSelectedItem().toString();
-            String selectedTipe = spinnerTipe.getSelectedItem().toString();
-            String selectedTingkat = spinnerTingkat.getSelectedItem().toString();
+            String kategori = spinnerKategori.getSelectedItem().toString();
+            String tipe = spinnerTipe.getSelectedItem().toString();
+            String tingkat = spinnerTingkat.getSelectedItem().toString();
             String keyword = cariEditText.getText().toString().toLowerCase();
 
-            List<KuisModel> filteredList = new ArrayList<>();
+            List<KuisModel> filtered = new ArrayList<>();
             for (KuisModel kuis : allKuisList) {
-                boolean cocokKategori = selectedKategori.equals("Kategori Kuis") || kuis.getCategory().equalsIgnoreCase(selectedKategori);
-                boolean cocokTipe = selectedTipe.equals("Tipe Kuis") || kuis.getType().equalsIgnoreCase(selectedTipe);
-                boolean cocokTingkat = selectedTingkat.equals("Tingkat Kesulitan") || kuis.getDifficulty().equalsIgnoreCase(selectedTingkat);
-                boolean cocokCari = keyword.isEmpty() || kuis.getTitle().toLowerCase().contains(keyword);
+                boolean matchKategori = kategori.equals("Kategori Kuis") || kuis.getCategory().equalsIgnoreCase(kategori);
+                boolean matchTipe = tipe.equals("Tipe Kuis") || kuis.getType().equalsIgnoreCase(tipe);
+                boolean matchTingkat = tingkat.equals("Tingkat Kesulitan") || kuis.getDifficulty().equalsIgnoreCase(tingkat);
+                boolean matchCari = keyword.isEmpty() || kuis.getTitle().toLowerCase().contains(keyword);
 
-                if (cocokKategori && cocokTipe && cocokTingkat && cocokCari) {
-                    filteredList.add(kuis);
+                if (matchKategori && matchTipe && matchTingkat && matchCari) {
+                    filtered.add(kuis);
                 }
             }
 
             icLoading.setVisibility(View.GONE);
 
-            if (filteredList.isEmpty()) {
+            if (filtered.isEmpty()) {
                 no_data.setVisibility(View.VISIBLE);
                 recyclerKuis.setVisibility(View.GONE);
             } else {
                 no_data.setVisibility(View.GONE);
                 recyclerKuis.setVisibility(View.VISIBLE);
-                kuisAdapter = new KuisAdapter(this, filteredList);
+                kuisAdapter = new KuisAdapter(this, filtered);
                 recyclerKuis.setAdapter(kuisAdapter);
             }
-
-        }, 1500);
+        }, 1000);
     }
-
 
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        return info != null && info.isConnected();
     }
 
     @Override
@@ -233,9 +233,7 @@ public class SemuaKuisActivity extends AppCompatActivity {
                 kuis.getCategory() + "|" +
                 kuis.getType() + "|" +
                 kuis.getDifficulty() + "|" +
-                kuis.getId_Image() + "|"  +
+                kuis.getId_Image() + "|" +
                 kuis.getUserId();
     }
-
-
 }

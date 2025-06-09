@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseContract.Kuis.TIPE + " TEXT, " +
                 DatabaseContract.Kuis.TINGKAT_KESULITAN + " TEXT, " +
                 DatabaseContract.Kuis.IMG_URL + " TEXT, " +
+                DatabaseContract.Kuis.STATUS + " TEXT DEFAULT 'buka', " +
                 DatabaseContract.Kuis.CREATED_AT + " TEXT, " +
                 DatabaseContract.Kuis.UPDATED_AT + " TEXT)";
 
