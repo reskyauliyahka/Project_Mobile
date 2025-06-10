@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -101,21 +103,68 @@ public class ProfilFragment extends Fragment {
 
         temaLayout.setOnClickListener(v -> {
             if (userId != -1) {
-                String userIdStr = String.valueOf(userId);
-                boolean isDark = ThemeHelper.isDarkMode(requireContext(), userIdStr);
-                ThemeHelper.setDarkMode(requireContext(), userIdStr, !isDark);
-                requireActivity().recreate();
+                View view2 = LayoutInflater.from(requireContext()).inflate(R.layout.dialog, null, false);
+
+                TextView tvMessage = view2.findViewById(R.id.tvMessage);
+                tvMessage.setText("Apakah Anda ingin mengubah tema aplikasi?");
+                AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                        .setView(view2)
+                        .create();
+
+                dialog.show();
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(
+                            new ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
+                    );
+                }
+
+                Button btnCancel = view2.findViewById(R.id.btnCancel);
+                Button btnConfirm = view2.findViewById(R.id.btnConfirm);
+
+                btnCancel.setOnClickListener(v1 -> dialog.dismiss());
+
+                btnConfirm.setOnClickListener(v1 -> {
+                    String userIdStr = String.valueOf(userId);
+                    boolean isDark = ThemeHelper.isDarkMode(requireContext(), userIdStr);
+                    ThemeHelper.setDarkMode(requireContext(), userIdStr, !isDark);
+                    requireActivity().recreate();
+                    dialog.dismiss();
+                });
             }
         });
 
-        logout.setOnClickListener(v -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
 
-            startActivity(new Intent(requireActivity(), LoginActivity.class));
-            requireActivity().finish();
+        logout.setOnClickListener(v -> {
+            View view2 = LayoutInflater.from(requireContext()).inflate(R.layout.dialog, null, false);
+
+            AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                    .setView(view2)
+                    .create();
+
+            dialog.show();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(
+                        new ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
+                );
+            }
+
+            Button btnCancel = view2.findViewById(R.id.btnCancel);
+            Button btnConfirm = view2.findViewById(R.id.btnConfirm);
+
+            btnCancel.setOnClickListener(v2 -> dialog.dismiss());
+
+            btnConfirm.setOnClickListener(v2 -> {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+
+                startActivity(new Intent(requireActivity(), LoginActivity.class));
+                requireActivity().finish();
+            });
+
+
         });
+
 
         btn_editProfil.setOnClickListener(v -> showEditDialog());
 

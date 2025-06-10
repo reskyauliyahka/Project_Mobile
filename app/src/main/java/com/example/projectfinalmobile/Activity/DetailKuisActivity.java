@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -122,7 +123,7 @@ public class DetailKuisActivity extends AppCompatActivity {
 
         Picasso.get()
                 .load(kuis.getId_Image())
-                .placeholder(R.drawable.logout)
+                .placeholder(R.drawable.loading)
                 .error(R.drawable.accept)
                 .fit()
                 .centerCrop()
@@ -179,24 +180,41 @@ public class DetailKuisActivity extends AppCompatActivity {
 
                 String statusBaru = kuis.getStatus().equalsIgnoreCase("tutup") ? "buka" : "tutup";
 
-                new AlertDialog.Builder(this)
-                        .setTitle("Ubah Status Kuis")
-                        .setMessage(pesan)
-                        .setPositiveButton("Ya", (dialog, which) -> {
-                            boolean sukses = kuisHelper.updateStatusKuis(kuisId, statusBaru);
-                            if (sukses) {
-                                kuis.setStatus(statusBaru);
-                                Toast.makeText(this, "Status berhasil diperbarui ke " + statusBaru, Toast.LENGTH_SHORT).show();
-                                btn_favorit.setImageResource(
-                                        statusBaru.equals("tutup") ? R.drawable.lock : R.drawable.unlock
-                                );
-                            } else {
-                                Toast.makeText(this, "Gagal memperbarui status", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("Batal", null)
-                        .show();
+                View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null, false);
+                TextView tvMessage = dialogView.findViewById(R.id.tvMessage);
+                tvMessage.setText(pesan);
+
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .create();
+
+                dialog.show();
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(
+                            new ColorDrawable(ContextCompat.getColor(this, R.color.white))
+                    );
+                }
+
+                Button btnYa = dialogView.findViewById(R.id.btnConfirm);
+                Button btnBatal = dialogView.findViewById(R.id.btnCancel);
+
+                btnYa.setOnClickListener(view1 -> {
+                    boolean sukses = kuisHelper.updateStatusKuis(kuisId, statusBaru);
+                    if (sukses) {
+                        kuis.setStatus(statusBaru);
+                        Toast.makeText(this, "Status berhasil diperbarui ke " + statusBaru, Toast.LENGTH_SHORT).show();
+                        btn_favorit.setImageResource(
+                                statusBaru.equals("tutup") ? R.drawable.lock : R.drawable.unlock
+                        );
+                    } else {
+                        Toast.makeText(this, "Gagal memperbarui status", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                });
+
+                btnBatal.setOnClickListener(view1 -> dialog.dismiss());
             });
+
 
         } else {
             boolean sudahDikerjakan = aktivitasKuisHelper.isKuisSudahDikerjakan(userId, kuisId);
@@ -241,48 +259,75 @@ public class DetailKuisActivity extends AppCompatActivity {
             return;
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null, false);
+        TextView tvMessage = dialogView.findViewById(R.id.tvMessage);
+        Button btnYa = dialogView.findViewById(R.id.btnConfirm);
+        Button btnBatal = dialogView.findViewById(R.id.btnCancel);
 
         if (!isFavorit) {
-            builder.setTitle("Tambah ke Favorit");
-            builder.setMessage("Apakah Anda ingin menambahkan ke favorite?");
-            builder.setPositiveButton("Ya", (dialog, which) -> {
+            tvMessage.setText("Apakah Anda ingin menambahkan ke favorite?");
+        } else {
+            tvMessage.setText("Apakah Anda ingin menghapus dari favorite?");
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(ContextCompat.getColor(this, R.color.white))
+            );
+        }
+        btnYa.setOnClickListener(v -> {
+            if (!isFavorit) {
                 favoritHelper.insertFavorit(userId, kuisId);
                 isFavorit = true;
                 btn_favorit.setImageResource(R.drawable.bookmark);
                 Toast.makeText(this, "Berhasil menambahkan ke favorit!", Toast.LENGTH_SHORT).show();
-            });
-        } else {
-            builder.setTitle("Hapus dari Favorit");
-            builder.setMessage("Apakah Anda ingin menghapus dari favorite?");
-            builder.setPositiveButton("Ya", (dialog, which) -> {
+            } else {
                 favoritHelper.deleteFavorit(userId, kuisId);
                 isFavorit = false;
                 btn_favorit.setImageResource(R.drawable.bookmark_kosong);
                 Toast.makeText(this, "Berhasil menghapus dari favorit", Toast.LENGTH_SHORT).show();
-            });
-        }
+            }
+            dialog.dismiss();
+        });
 
-        builder.setNegativeButton("Batal", (dialog, which) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
+
         dialog.show();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
     }
 
     private void confirmHapusKuis() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Hapus Kuis");
-        builder.setMessage("Apakah Anda yakin ingin menghapus kuis ini?");
-        builder.setPositiveButton("Ya", (dialog, which) -> {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog, null, false);
+
+        TextView tvMessage = dialogView.findViewById(R.id.tvMessage);
+        Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        tvMessage.setText("Apakah Anda yakin ingin menghapus kuis ini?");
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(ContextCompat.getColor(this, R.color.white))
+            );
+        }
+
+        btnConfirm.setOnClickListener(v -> {
             kuisHelper.deleteFullKuisById(kuisId);
             Toast.makeText(this, "Kuis berhasil dihapus", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
             finish();
         });
-        builder.setNegativeButton("Batal", (dialog, which) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
         dialog.show();
     }
+
 
     @Override
     protected void onResume() {

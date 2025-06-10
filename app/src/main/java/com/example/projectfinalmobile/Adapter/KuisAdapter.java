@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,7 +93,7 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
 
         Picasso.get()
                 .load(kuis.getId_Image())
-                .placeholder(R.drawable.logout)
+                .placeholder(R.drawable.loading)
                 .error(R.drawable.accept)
                 .fit()
                 .centerCrop()
@@ -140,29 +141,44 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
 
                 String statusBaru = kuis.getStatus().equalsIgnoreCase("tutup") ? "buka" : "tutup";
 
-                new AlertDialog.Builder(context)
-                        .setTitle("Ubah Status Kuis")
-                        .setMessage(pesan)
-                        .setPositiveButton("Ya", (dialog, which) -> {
-                            boolean sukses = kuisHelper.updateStatusKuis(kuisId, statusBaru);
-                            if (sukses) {
-                                kuis.setStatus(statusBaru);
-                                Toast.makeText(context, "Status berhasil diperbarui ke " + statusBaru, Toast.LENGTH_SHORT).show();
-                                holder.btn_favorit.setImageResource(
-                                        statusBaru.equals("tutup") ? R.drawable.lock : R.drawable.unlock
-                                );
-                            } else {
-                                Toast.makeText(context, "Gagal memperbarui status", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("Batal", null)
-                        .show();
+                View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog, null, false);
+
+                TextView tvMessage = dialogView.findViewById(R.id.tvMessage);
+                Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+                Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+                tvMessage.setText(pesan);
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .create();
+
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(
+                            new ColorDrawable(ContextCompat.getColor(context, R.color.white))
+                    );
+                }
+                btnConfirm.setOnClickListener(v1 -> {
+                    boolean sukses = kuisHelper.updateStatusKuis(kuis.getId(), statusBaru);
+                    if (sukses) {
+                        kuis.setStatus(statusBaru);
+                        Toast.makeText(context, "Status berhasil diperbarui ke " + statusBaru, Toast.LENGTH_SHORT).show();
+                        holder.btn_favorit.setImageResource(
+                                statusBaru.equals("tutup") ? R.drawable.lock : R.drawable.unlock
+                        );
+                    } else {
+                        Toast.makeText(context, "Gagal memperbarui status", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                });
+
+                btnCancel.setOnClickListener(v1 -> dialog.dismiss());
+
+                dialog.show();
             });
 
         } else {
 
             boolean isFavorit = favoritHelper.isFavorit(userId, kuisId);
-
             holder.btn_favorit.setImageResource(isFavorit ? R.drawable.bookmark : R.drawable.bookmark_kosong);
 
             holder.btn_favorit.setOnClickListener(v -> {
@@ -171,22 +187,33 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
                     return;
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setCancelable(true);
+                String pesan = isFavorit ?
+                        "Apakah Anda ingin menghapus dari favorit?" :
+                        "Apakah Anda ingin menambahkan ke favorit?";
 
-                if (!isFavorit) {
-                    builder.setTitle("Tambah ke Favorit");
-                    builder.setMessage("Apakah Anda ingin menambahkan ke favorite?");
-                    builder.setPositiveButton("Ya", (dialog, which) -> {
+                View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog, null, false);
+                TextView tvMessage = dialogView.findViewById(R.id.tvMessage);
+                Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+                Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+                tvMessage.setText(pesan);
+
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .create();
+
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(
+                            new ColorDrawable(ContextCompat.getColor(context, R.color.white))
+                    );
+                }
+
+                btnConfirm.setOnClickListener(v1 -> {
+                    if (!isFavorit) {
                         favoritHelper.insertFavorit(userId, kuisId);
-                        Log.d("FAVORIT_DEBUG", "Menambahkan kuis ke favorit dengan kuis_id: " + kuisId + " oleh user_id: " + userId);
                         holder.btn_favorit.setImageResource(R.drawable.bookmark);
                         Toast.makeText(context, "Berhasil menambahkan ke favorit!", Toast.LENGTH_SHORT).show();
-                    });
-                } else {
-                    builder.setTitle("Hapus dari Favorit");
-                    builder.setMessage("Apakah Anda ingin menghapus dari favorite?");
-                    builder.setPositiveButton("Ya", (dialog, which) -> {
+                    } else {
                         favoritHelper.deleteFavorit(userId, kuisId);
                         holder.btn_favorit.setImageResource(R.drawable.bookmark_kosong);
                         Toast.makeText(context, "Berhasil menghapus dari favorit", Toast.LENGTH_SHORT).show();
@@ -194,19 +221,16 @@ public class KuisAdapter extends RecyclerView.Adapter<KuisAdapter.KuisViewHolder
                         if (favoritChangedListener != null) {
                             favoritChangedListener.onFavoritChanged();
                         }
-                    });
+                    }
 
-                }
+                    dialog.dismiss();
+                });
 
-                builder.setNegativeButton("Batal", (dialog, which) -> dialog.dismiss());
+                btnCancel.setOnClickListener(v1 -> dialog.dismiss());
 
-                AlertDialog dialog = builder.create();
                 dialog.show();
-
-                dialog.getWindow().setBackgroundDrawable(
-                        new ColorDrawable(ContextCompat.getColor(context, R.color.white))
-                );
             });
+
 
         }
 

@@ -266,7 +266,7 @@
             android:fontFamily="@font/nexaheavy"
             android:textSize="14sp"
             android:textAllCaps="false"
-
+            android:visibility="gone"
             />
         <Button
             android:id="@+id/btn_kerjakan"

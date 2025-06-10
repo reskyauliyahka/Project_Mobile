@@ -2,6 +2,7 @@ package com.example.projectfinalmobile.Activity;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -57,7 +58,6 @@ public class TinjauJawabanActivity extends AppCompatActivity {
         aktivitasKuisHelper.open();
         kuisHelper.open();
 
-        // Ambil data kuis dari Intent
         KuisModel kuis = getIntent().getParcelableExtra("data_kuis");
         int kuisId = kuisHelper.getIdByTitle(kuis.getTitle());
         if (kuis != null) {
@@ -70,14 +70,13 @@ public class TinjauJawabanActivity extends AppCompatActivity {
 
         });
 
+        Button btn_kembali = findViewById(R.id.batal);
+        btn_kembali.setOnClickListener(v -> finish());
 
         List<Map<String, Object>> daftarUser2 = aktivitasKuisHelper.getUserYangMengerjakanKuis(kuisId);
         int totalJawabanKuis = daftarUser2.size();
 
         totalJawabanText.setText(String.valueOf(totalJawabanKuis));
-
-
-
 
     }
 
@@ -92,7 +91,7 @@ public class TinjauJawabanActivity extends AppCompatActivity {
             View cardView = inflater.inflate(R.layout.card_tinjau_jawaban, containerPertanyaan, false);
 
             EditText edtPertanyaan = cardView.findViewById(R.id.pertanyaan);
-            PieChart pieChart = cardView.findViewById(R.id.pie_chart_jawaban); // ✅ Perbaikan penting
+            PieChart pieChart = cardView.findViewById(R.id.pie_chart_jawaban);
 
             edtPertanyaan.setText(soal.getQuestion());
             edtPertanyaan.setEnabled(false);
@@ -107,16 +106,14 @@ public class TinjauJawabanActivity extends AppCompatActivity {
             }
             int jumlahSalah = totalJawaban - jumlahBenar;
 
-
-            // Siapkan data PieChart
             List<PieEntry> entries = new ArrayList<>();
             entries.add(new PieEntry(jumlahBenar, "Benar"));
             entries.add(new PieEntry(jumlahSalah, "Salah"));
 
             PieDataSet dataSet = new PieDataSet(entries, "Hasil Jawaban");
             dataSet.setColors(
-                    Color.parseColor("#009C9E"), // Benar
-                    Color.parseColor("#87A75152")  // Salah
+                    Color.parseColor("#009C9E"),
+                    Color.parseColor("#87A75152")
             );
             dataSet.setValueTextSize(14f);
             dataSet.setValueTextColor(Color.WHITE);
@@ -174,7 +171,7 @@ public class TinjauJawabanActivity extends AppCompatActivity {
                     Uri uri = Uri.parse(fotoProfilStr);
                     fotoProfilView.setImageURI(uri);
                 } catch (Exception e) {
-                    fotoProfilView.setImageResource(R.drawable.userprofil); // fallback image
+                    fotoProfilView.setImageResource(R.drawable.userprofil);
                 }
             } else {
                 fotoProfilView.setImageResource(R.drawable.userprofil);
@@ -197,6 +194,12 @@ public class TinjauJawabanActivity extends AppCompatActivity {
                 .setView(container)
                 .setPositiveButton("Tutup", null)
                 .show();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(ContextCompat.getColor(this, R.color.white))
+            );
+        }
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(this, R.color.utama));

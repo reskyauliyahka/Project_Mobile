@@ -164,7 +164,7 @@ public class SemuaKuisActivity extends AppCompatActivity {
                 gagalMemuat.setVisibility(View.VISIBLE);
                 no_data.setVisibility(View.GONE);
                 recyclerKuis.setVisibility(View.GONE);
-                allKuisList.clear(); // kosongkan agar tidak difilter
+                allKuisList.clear();
             }
         });
     }

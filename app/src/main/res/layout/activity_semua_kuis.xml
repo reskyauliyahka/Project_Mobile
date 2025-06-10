@@ -30,7 +30,7 @@
             android:layout_marginStart="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Daftar Rekomendasi"
+            android:text="Daftar Kuis"
             android:textColor="@color/text"
             android:textSize="18sp"
             android:fontFamily="@font/nexaheavy"
