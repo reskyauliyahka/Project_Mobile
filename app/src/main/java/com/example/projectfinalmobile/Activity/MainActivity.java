@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         KuisModel kuisModel = getIntent().getParcelableExtra("data_kuis");
 
         if (getIntent() != null && getIntent().hasExtra("data_kuis")) {
-            // Kirim data ke fragment
+
             Bundle bundle = new Bundle();
             bundle.putParcelable("data_kuis", kuisModel);
 
@@ -51,9 +51,10 @@ public class MainActivity extends AppCompatActivity {
             buatFragment.setArguments(bundle);
 
             loadFragment(buatFragment);
-            bottomNav.setSelectedItemId(R.id.tambah); // opsional: update bottom navigation
+            bottomNav.setSelectedItemId(R.id.tambah);
+
         } else {
-            // Default: load HomeFragment
+
             loadFragment(new HomeFragment());
         }
 

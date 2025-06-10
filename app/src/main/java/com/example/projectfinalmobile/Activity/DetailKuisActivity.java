@@ -99,7 +99,6 @@ public class DetailKuisActivity extends AppCompatActivity {
     private void loadDetailKuis() {
         if (kuis == null) return;
 
-        // Simpan jika belum ada di database lokal
         if (!kuisHelper.isKuisExist(kuis.getTitle())) {
             SQLiteDatabase db = kuisHelper.getWritableDatabase();
             kuisHelper.insertKuisLengkap(kuis, db);
@@ -121,7 +120,6 @@ public class DetailKuisActivity extends AppCompatActivity {
 
         btn_favorit.setImageResource(isFavorit ? R.drawable.bookmark : R.drawable.bookmark_kosong);
 
-        // Set gambar
         Picasso.get()
                 .load(kuis.getId_Image())
                 .placeholder(R.drawable.logout)
@@ -130,7 +128,6 @@ public class DetailKuisActivity extends AppCompatActivity {
                 .centerCrop()
                 .into(tvImage);
 
-        // Warna kesulitan
         switch (kuis.getDifficulty()) {
             case "Mudah":
                 tvTingkatKesulitan.setTextColor(ContextCompat.getColor(this, R.color.utama));

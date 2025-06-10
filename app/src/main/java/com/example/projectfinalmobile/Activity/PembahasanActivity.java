@@ -36,7 +36,7 @@ public class PembahasanActivity extends AppCompatActivity {
     private LinearLayout containerPembahasan;
     private LayoutInflater inflater;
     private ApiService apiService;
-    private KuisModel kuis;  // Jadikan field agar bisa dipakai di method lain
+    private KuisModel kuis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +82,6 @@ public class PembahasanActivity extends AppCompatActivity {
 
             TextView pembahasan = cardView.findViewById(R.id.pembahasan);
 
-            // Disable input supaya tidak bisa diedit
             edtPertanyaan.setEnabled(false);
             opsi1.setEnabled(false);
             opsi2.setEnabled(false);

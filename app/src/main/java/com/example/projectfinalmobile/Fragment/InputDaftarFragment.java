@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.projectfinalmobile.Helper.KuisHelper;
@@ -82,8 +83,10 @@ public class InputDaftarFragment extends Fragment {
             acceptIcons[i].setOnClickListener(v -> {
                 for (int j = 0; j < acceptIcons.length; j++) {
                     acceptIcons[j].setImageResource(R.drawable.check);
+                    acceptIcons[j].setImageTintList(ContextCompat.getColorStateList(getContext(), R.color.utama));
                 }
                 acceptIcons[index].setImageResource(R.drawable.accept);
+                acceptIcons[index].setImageTintList(null);
                 listJawabanBenar.set(currentIndex, index);
             });
         }
@@ -148,19 +151,20 @@ public class InputDaftarFragment extends Fragment {
         int kuis_id = dbHelper.getIdByTitle(kuisLama.getTitle());
 
         if (kuisLama != null && kuis_id > 0) {
-            // ======= MODE UPDATE =======
+
             kuisLama.setQuestions(pertanyaanList);
             kuisLama.setId(kuis_id);
             kuisLama.setUserId(String.valueOf(userId));
             boolean updated = dbHelper.updateKuisLengkap(kuisLama, db);
             if (updated) {
                 Toast.makeText(getContext(), "Kuis berhasil diperbarui", Toast.LENGTH_SHORT).show();
+                clearInput();
             } else {
                 Toast.makeText(getContext(), "Gagal memperbarui kuis", Toast.LENGTH_SHORT).show();
             }
 
         } else {
-            // ======= MODE BUAT BARU =======
+
             String judul = args.getString("judul");
             String kategori = args.getString("kategori");
             String tipe = args.getString("tipe");
@@ -226,7 +230,7 @@ public class InputDaftarFragment extends Fragment {
     private void clearInput() {
         containerPertanyaan.removeAllViews();
         listJawabanBenar.clear();
-        tambahPertanyaan(); // Tambahkan satu pertanyaan awal kembali
+        tambahPertanyaan();
     }
 
     private void isiPertanyaanDariData(KuisModel kuis) {
@@ -284,7 +288,6 @@ public class InputDaftarFragment extends Fragment {
                     listJawabanBenar.set(currentIndex, idx);
                 });
 
-                // Jika jawaban saat ini benar, tampilkan tanda centang
                 if (i == indexJawaban) {
                     acceptIcons[i].setImageResource(R.drawable.accept);
                 } else {

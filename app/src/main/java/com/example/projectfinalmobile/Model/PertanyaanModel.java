@@ -57,9 +57,6 @@ public class PertanyaanModel implements Parcelable {
     public void setKuis_id(int kuis_id) {
         this.kuis_id = kuis_id;
     }
-    public int getKuis_id() {
-        return kuis_id;
-    }
 
     @Override
     public int describeContents() {

@@ -116,7 +116,15 @@ public class KerjakanActivity extends AppCompatActivity {
         });
 
 
-        btnSimpan.setText(pertanyaanList.size() == 1 ? "Kirim" : "Selanjutnya");
+//        btnSimpan.setText(pertanyaanList.size() == 1 ? "Kirim" : "Selanjutnya");
+        if (kuis.getStatus() != null && kuis.getStatus().equalsIgnoreCase("tutup")) {
+            Toast.makeText(this, "Kuis ini telah ditutup dan tidak dapat dikerjakan.", Toast.LENGTH_SHORT).show();
+            btnSimpan.setEnabled(false);
+            btnSimpan.setAlpha(0.5f);
+        } else {
+            btnSimpan.setText(pertanyaanList.size() == 1 ? "Kirim" : "Selanjutnya");
+        }
+
 
         btnBatal.setOnClickListener(v -> finish());
     }

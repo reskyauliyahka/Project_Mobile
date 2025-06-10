@@ -119,7 +119,7 @@ public class SemuaKuisActivity extends AppCompatActivity {
             icLoading.setVisibility(View.VISIBLE);
             gagalMemuat.setVisibility(View.VISIBLE);
             no_data.setVisibility(View.GONE);
-            allKuisList.clear(); // pastikan kosong
+            allKuisList.clear();
             return;
         }
 

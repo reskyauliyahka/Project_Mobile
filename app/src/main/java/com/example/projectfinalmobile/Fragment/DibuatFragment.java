@@ -120,7 +120,6 @@ public class DibuatFragment extends Fragment {
 
             Context context = getContext();
             if (context == null) {
-                // Context null, skip load data supaya tidak crash
                 icLoading.setVisibility(View.GONE);
                 noData.setVisibility(View.VISIBLE);
                 recyclerKuis.setVisibility(View.GONE);
@@ -130,7 +129,6 @@ public class DibuatFragment extends Fragment {
             SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             int userIdInt = sharedPreferences.getInt("user_id", -1);
             if (userIdInt == -1) {
-                // User ID tidak valid, bisa juga tampilkan pesan atau skip
                 icLoading.setVisibility(View.GONE);
                 noData.setVisibility(View.VISIBLE);
                 recyclerKuis.setVisibility(View.GONE);

@@ -25,7 +25,6 @@ public class ScoreActivity extends AppCompatActivity {
 
         txtScore = findViewById(R.id.score);
 
-//        ArrayList<String> jawabanUser = getIntent().getStringArrayListExtra("jawaban_user");
         KuisModel kuis = getIntent().getParcelableExtra("data_kuis");
 
 
@@ -37,7 +36,6 @@ public class ScoreActivity extends AppCompatActivity {
             Intent intent = new Intent(this, PembahasanActivity.class);
             intent.putExtra("data_kuis", kuis);
             intent.putExtra("score", score);
-//            intent.putStringArrayListExtra("jawaban_user", new ArrayList<>(jawabanUser));
             startActivity(intent);
         });
 

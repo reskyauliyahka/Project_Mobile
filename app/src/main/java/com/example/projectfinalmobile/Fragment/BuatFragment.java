@@ -34,7 +34,6 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
         InputDetailFragment inputDetailFragment = new InputDetailFragment();
 
         if (args != null && args.containsKey("data_kuis")) {
-            // Teruskan argumen ke InputDetailFragment
             inputDetailFragment.setArguments(args);
         }
 
@@ -68,7 +67,7 @@ public class BuatFragment extends Fragment implements InputDetailFragment.OnNext
         InputDaftarFragment daftarFragment = new InputDaftarFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable("data_kuis", dataKuis); // kirim seluruh model
+        bundle.putParcelable("data_kuis", dataKuis);
         bundle.putString("judul", judul);
         bundle.putString("kategori", kategori);
         bundle.putString("tipe", tipe);

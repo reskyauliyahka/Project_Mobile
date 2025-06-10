@@ -175,7 +175,7 @@ public class AktivitasKuisHelper {
             cursor.close();
         }
 
-        return statistik; // key = indeks soal, value = map jawaban A/B/C/D -> jumlah user
+        return statistik;
     }
 
     public List<Map<String, Object>> getUserYangMengerjakanKuis(int kuisId) {
@@ -225,7 +225,6 @@ public class AktivitasKuisHelper {
             cursor.close();
         }
 
-        // Balikkan urutan agar grafik tampil dari yang lama ke yang terbaru
         java.util.Collections.reverse(skorList);
 
         return skorList;

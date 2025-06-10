@@ -70,7 +70,6 @@ public class InputDetailFragment extends Fragment {
         tingkat_kesulitan = view.findViewById(R.id.tingkat_kesulitan);
         selanjutnya = view.findViewById(R.id.selanjutnya);
 
-        // Set adapters
         ArrayAdapter<CharSequence> adapterKategori = ArrayAdapter.createFromResource(
                 requireContext(), R.array.kategori_kuis, android.R.layout.simple_spinner_item);
         adapterKategori.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -86,7 +85,6 @@ public class InputDetailFragment extends Fragment {
         adapterTingkat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         tingkat_kesulitan.setAdapter(adapterTingkat);
 
-        // Ambil data dari arguments
         Bundle args = getArguments();
         if (args != null && args.containsKey("data_kuis")) {
             kuis = args.getParcelable("data_kuis");
@@ -118,12 +116,11 @@ public class InputDetailFragment extends Fragment {
                             .centerCrop()
                             .into(img);
 
-                    imageUri = Uri.parse(kuis.getId_Image()); // Simpan URI jika diperlukan nanti
+                    imageUri = Uri.parse(kuis.getId_Image());
                 }
             }
         }
 
-        // Image picker
         img.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -145,7 +142,6 @@ public class InputDetailFragment extends Fragment {
                 return;
             }
 
-            // Update dataKuis jika ada, atau buat baru jika tidak ada
             if (kuis == null) {
                 kuis = new KuisModel();
             }

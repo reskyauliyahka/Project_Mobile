@@ -300,7 +300,6 @@ public class KuisHelper {
                 kuis.setId_image(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.IMG_URL)));
                 kuis.setUserId(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.Kuis.USER_ID))); // ambil dari database
 
-                // Ambil pertanyaan untuk kuis ini
                 List<PertanyaanModel> pertanyaanList = new ArrayList<>();
                 Cursor cursorPertanyaan = db.query(
                         DatabaseContract.Pertanyaan.TABLE_NAME,
@@ -318,7 +317,6 @@ public class KuisHelper {
                         pertanyaan.setQuestion(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.PERTANYAAN)));
                         pertanyaan.setAnswer(cursorPertanyaan.getString(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan.JAWABAN)));
 
-                        // Ambil opsi jawaban untuk pertanyaan ini
                         List<String> opsiList = new ArrayList<>();
                         Cursor cursorOpsi = db.query(
                                 DatabaseContract.OpsiJawaban.TABLE_NAME,
@@ -356,7 +354,7 @@ public class KuisHelper {
         boolean success = false;
 
         try {
-            // Step 1: Ambil semua pertanyaan dari kuis ini
+
             Cursor cursorPertanyaan = db.query(
                     DatabaseContract.Pertanyaan.TABLE_NAME,
                     new String[]{DatabaseContract.Pertanyaan._ID},
@@ -369,7 +367,6 @@ public class KuisHelper {
                 while (cursorPertanyaan.moveToNext()) {
                     int pertanyaanId = cursorPertanyaan.getInt(cursorPertanyaan.getColumnIndexOrThrow(DatabaseContract.Pertanyaan._ID));
 
-                    // Step 2: Hapus semua opsi jawaban terkait pertanyaan ini
                     db.delete(DatabaseContract.OpsiJawaban.TABLE_NAME,
                             DatabaseContract.OpsiJawaban.PERTANYAAN_ID + " = ?",
                             new String[]{String.valueOf(pertanyaanId)});
@@ -377,12 +374,10 @@ public class KuisHelper {
                 cursorPertanyaan.close();
             }
 
-            // Step 3: Hapus semua pertanyaan dari kuis ini
             db.delete(DatabaseContract.Pertanyaan.TABLE_NAME,
                     DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
                     new String[]{String.valueOf(kuisId)});
 
-            // Step 4: Hapus kuis dari tabel Kuis
             db.delete(DatabaseContract.Kuis.TABLE_NAME,
                     DatabaseContract.Kuis._ID + " = ?",
                     new String[]{String.valueOf(kuisId)});
@@ -403,7 +398,7 @@ public class KuisHelper {
         boolean success = false;
 
         try {
-            // 1. Update data kuis
+
             ContentValues values = new ContentValues();
             values.put(DatabaseContract.Kuis.JUDUL, kuis.getTitle());
             values.put(DatabaseContract.Kuis.TIPE, kuis.getType());
@@ -419,7 +414,6 @@ public class KuisHelper {
 
             if (rowsUpdated <= 0) return false;
 
-            // 2. Hapus semua pertanyaan lama dan opsi jawaban terkait
             Cursor cursorPertanyaan = db.query(
                     DatabaseContract.Pertanyaan.TABLE_NAME,
                     new String[]{DatabaseContract.Pertanyaan._ID},
@@ -443,7 +437,6 @@ public class KuisHelper {
                     DatabaseContract.Pertanyaan.KUIS_ID + " = ?",
                     new String[]{String.valueOf(kuis.getId())});
 
-            // 3. Tambahkan pertanyaan dan opsi baru
             if (kuis.getQuestions() != null) {
                 for (PertanyaanModel pertanyaan : kuis.getQuestions()) {
                     ContentValues pertanyaanValues = new ContentValues();

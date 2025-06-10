@@ -8,40 +8,22 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class KuisModel implements Parcelable {
-
     private int id;
+
     @SerializedName("image")
     private String id_image;
+
     private String title;
     private String category;
     private String type;
     private String difficulty;
     private String status;
-    private List<PertanyaanModel> questions;
-
-    private List<String> jawabanUser;
-
-    public List<String> getJawabanUser() {
-        return jawabanUser;
-    }
-
-    public void setJawabanUser(List<String> jawabanUser) {
-        this.jawabanUser = jawabanUser;
-    }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-
-
     private String userId;
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
-
+    private List<PertanyaanModel> questions;
+    private List<String> jawabanUser;
 
     public KuisModel() {
     }
-
 
     public KuisModel(String id_image, String title, String category, String type, String difficulty, List<PertanyaanModel> questions) {
         this.id_image = id_image;
@@ -74,35 +56,6 @@ public class KuisModel implements Parcelable {
         }
     };
 
-    public String getId_Image() {
-        return id_image;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getDifficulty() {
-        return difficulty;
-    }
-
-    public List<PertanyaanModel> getQuestions() {
-        return questions;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id_image);
@@ -114,21 +67,11 @@ public class KuisModel implements Parcelable {
         dest.writeStringList(jawabanUser);
     }
 
-    public void setId_image(String id_image) {
-        this.id_image = id_image;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
     public int getId() {
         return id;
     }
@@ -137,13 +80,75 @@ public class KuisModel implements Parcelable {
         this.id = id;
     }
 
+    public String getId_Image() {
+        return id_image;
+    }
 
+    public void setId_image(String id_image) {
+        this.id_image = id_image;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public List<PertanyaanModel> getQuestions() {
+        return questions;
+    }
+
     public void setQuestions(List<PertanyaanModel> questions) {
         this.questions = questions;
+    }
+
+    public List<String> getJawabanUser() {
+        return jawabanUser;
+    }
+
+    public void setJawabanUser(List<String> jawabanUser) {
+        this.jawabanUser = jawabanUser;
     }
 }

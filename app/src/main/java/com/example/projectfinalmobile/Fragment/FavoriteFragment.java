@@ -127,7 +127,7 @@ public class FavoriteFragment extends Fragment {
 
         new android.os.Handler().postDelayed(() -> {
             Context context = getContext();
-            if (context == null || !isAdded()) return;  // Cegah crash jika fragment sudah detached
+            if (context == null || !isAdded()) return;
 
             SharedPreferences sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
             int userId = sharedPreferences.getInt("user_id", -1);
@@ -156,7 +156,7 @@ public class FavoriteFragment extends Fragment {
                 cursor.close();
             }
 
-            if (!isAdded()) return; // Cek ulang sebelum manipulasi UI
+            if (!isAdded()) return;
 
             icLoading.setVisibility(View.GONE);
 
