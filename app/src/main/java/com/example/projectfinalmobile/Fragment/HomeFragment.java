@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
             if (cursor != null && cursor.moveToFirst()) {
                 String fetchedUsername = cursor.getString(cursor.getColumnIndexOrThrow("username"));
 
-                username.setText("Hai \n" +fetchedUsername);
+                username.setText("Hai, \n" +fetchedUsername);
 
                 cursor.close();
             } else {

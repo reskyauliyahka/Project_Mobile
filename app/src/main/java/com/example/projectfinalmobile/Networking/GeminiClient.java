@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GeminiClient {
     private static final String BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-    private static final String API_KEY = "AIzaSyBU54IRWZ8mZDHERFstgqbp2xWc3_XhpxI";
+    private static final String API_KEY = "AIzaSyA93ZkbWoq6OWChowJcd8YM6PM-eueZJLc";
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
 

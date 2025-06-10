@@ -137,7 +137,8 @@ public class InputDetailFragment extends Fragment {
             if (judulText.isEmpty() ||
                     kategoriText.equals("Kategori Kuis") ||
                     tipeText.equals("Tipe Kuis") ||
-                    tingkatText.equals("Tingkat Kesulitan")) {
+                    tingkatText.equals("Tingkat Kesulitan") ||
+                    imageUri == null) {
                 Toast.makeText(requireContext(), "Mohon lengkapi semua data!", Toast.LENGTH_SHORT).show();
                 return;
             }

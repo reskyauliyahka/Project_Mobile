@@ -197,6 +197,7 @@
                         android:layout_marginStart="10dp"
                         android:fontFamily="@font/nexaheavy"
                         android:text="Tema"
+                        android:layout_gravity="center"
                         android:textColor="@color/utama"
                         android:textSize="20sp"
                         android:textStyle="bold" />
